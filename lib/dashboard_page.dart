@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile_page.dart'; // Import file profil_page.dart
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -35,7 +36,8 @@ class DashboardPage extends StatelessWidget {
                   image: DecorationImage(
                     image: const AssetImage(backgroundImage),
                     fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.darken),
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.6), BlendMode.darken),
                   ),
                 ),
                 child: Center(
@@ -73,15 +75,15 @@ class DashboardPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                          'Pilih Kategori yang kamu inginkan',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                  'Pilih Kategori yang kamu inginkan',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              const SizedBox(height:20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
@@ -100,14 +102,11 @@ class DashboardPage extends StatelessWidget {
                       ),
                       child: const Text(
                         'Kegiatan',
-                        style: TextStyle(
-                          color: Colors.white
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: buttonColor,
                         shape: RoundedRectangleBorder(
@@ -117,14 +116,11 @@ class DashboardPage extends StatelessWidget {
                       ),
                       child: const Text(
                         'Webinar',
-                        style: TextStyle(
-                          color: Colors.white
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: buttonColor,
                         shape: RoundedRectangleBorder(
@@ -134,9 +130,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                       child: const Text(
                         'Project',
-                        style: TextStyle(
-                          color: Colors.white
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
@@ -146,15 +140,15 @@ class DashboardPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                        'Rekomendasi untuk mu',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  'Rekomendasi untuk mu',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              const SizedBox(height:20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: SizedBox(
@@ -175,19 +169,19 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height:20),
+              const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                        'Berita',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                  'Berita',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              const SizedBox(height:20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: SizedBox(
@@ -213,10 +207,18 @@ class DashboardPage extends StatelessWidget {
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: 0, 
+          currentIndex: 0,
           unselectedItemColor: Colors.grey,
           selectedItemColor: Colors.green,
           onTap: (int index) {
+            // Tambahkan kondisi untuk navigasi ke halaman profil
+            if (index == 3) {
+              // Indeks 3 adalah indeks untuk tombol "Profile"
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
+            }
           },
           items: const [
             BottomNavigationBarItem(
