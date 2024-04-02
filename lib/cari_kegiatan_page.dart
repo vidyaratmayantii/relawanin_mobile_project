@@ -110,9 +110,7 @@ class _carikegiatanState extends State<carikegiatan> {
         unselectedItemColor: Colors.grey,
         selectedItemColor: Colors.green,
         onTap: (int index) {
-          // Tambahkan kondisi untuk navigasi ke halaman profil
           if (index == 3) {
-            // Indeks 3 adalah indeks untuk tombol "Profile"
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ProfilePage()),

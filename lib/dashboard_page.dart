@@ -15,7 +15,7 @@ class DashboardPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
+          preferredSize: const Size.fromHeight(60.0), 
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
             leading: IconButton(
@@ -29,7 +29,7 @@ class DashboardPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
                   logoImage,
-                  height: 150, // Ubah tinggi logo sesuai kebutuhan
+                  height: 150,
                 ),
               ),
             ),
@@ -264,9 +264,7 @@ class DashboardPage extends StatelessWidget {
           unselectedItemColor: Colors.grey,
           selectedItemColor: Colors.green,
           onTap: (int index) {
-            // Tambahkan kondisi untuk navigasi ke halaman profil
             if (index == 3) {
-              // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),

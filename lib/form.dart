@@ -72,9 +72,9 @@ class form extends StatelessWidget {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
               ),
-              SizedBox(height: 10), //jaraknya dengan yang atas
+              SizedBox(height: 10), 
               Row(
-                mainAxisAlignment: MainAxisAlignment.start, // kiri button
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ElevatedButton(
                     onPressed: () {},
@@ -83,13 +83,13 @@ class form extends StatelessWidget {
                     ),
                     child: Row(
                       mainAxisAlignment:
-                          MainAxisAlignment.center, //tulisan ditengah
+                          MainAxisAlignment.center, 
                       children: [
                         Icon(
                           Icons.add_circle,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 8), // jarak antara icon dan teks
+                        SizedBox(width: 8), 
                         Text(
                           'Upload CV',
                           style: TextStyle(color: Colors.white),
@@ -108,7 +108,7 @@ class form extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromRGBO(0, 137, 123, 1),
-                  minimumSize: Size(30, 50), // Mengatur lebar tombol
+                  minimumSize: Size(30, 50), 
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

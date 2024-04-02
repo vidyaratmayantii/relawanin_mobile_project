@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
+import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/editProfile_page.dart';
 import 'package:relawanin_mobile_project/riwayat_page.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
@@ -12,11 +14,11 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
+        preferredSize: const Size.fromHeight(60.0),
         child: AppBar(
           backgroundColor: const Color(0xFF00897B),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: Icon(Icons.arrow_back,),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -180,6 +182,16 @@ class ProfilePage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ProfilePage()),
+            );
+          }else if(index == 0){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DashboardPage()),
+            );
+          }else if(index == 1){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => carikegiatan()),
             );
           }
         },

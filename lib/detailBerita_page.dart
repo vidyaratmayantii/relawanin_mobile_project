@@ -113,11 +113,9 @@ class DetailBeritaPage extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Tambahkan gambar di sini
                                 Image.asset(
                                   'assets/images.jpeg'
                                 ),
-                                // Tambahkan judul di sini
                                 Text(
                                   'Card ${index + 1}',
                                   style: TextStyle(
