@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/editProfile_page.dart';
+import 'package:relawanin_mobile_project/riwayat_page.dart';
+import 'package:relawanin_mobile_project/tentangkami_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -94,13 +97,23 @@ class ProfilePage extends StatelessWidget {
                 leading: Icon(Icons.edit),
                 title: Text('Edit Profil'),
                 trailing: Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditProfilPage()),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.history),
                 title: Text('Riwayat'),
                 trailing: Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Riwayat()),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.dark_mode),
@@ -115,7 +128,12 @@ class ProfilePage extends StatelessWidget {
                 leading: Icon(Icons.info),
                 title: Text('Tentang Kami'),
                 trailing: Icon(Icons.chevron_right),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TentangKami()),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.group),
@@ -123,24 +141,23 @@ class ProfilePage extends StatelessWidget {
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {},
               ),
-              ListTile(
-                // Widget ListTile
-                contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Menambahkan padding horizontal
-                trailing: Center(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Keluar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF00897B),
-                      shadowColor: Colors.red,
-                    ),
-                  ),
-                ),
-              ),
+              // ListTile(
+              //   // Widget ListTile
+              //   contentPadding: EdgeInsets.symmetric(
+              //       horizontal: 16.0), // Menambahkan padding horizontal
+              //   trailing: Center(
+              //     child: ElevatedButton(
+              //       onPressed: () {},
+              //       child: Text(
+              //         'Keluar',
+              //         style: TextStyle(color: Colors.white),
+              //       ),
+              //       style: ElevatedButton.styleFrom(
+              //         backgroundColor: Color(0xFF00897B),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

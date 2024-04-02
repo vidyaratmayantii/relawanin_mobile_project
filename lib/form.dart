@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromRGBO(0, 137, 123, 1),
+                      shadowColor: Color.fromRGBO(0, 137, 123, 1),
                     ),
                     child: Row(
                       mainAxisAlignment:
@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
                       SnackBar(content: Text('Formulir terkirim'))); //sncakbar
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(0, 137, 123, 1),
+                  shadowColor: Color.fromRGBO(0, 137, 123, 1),
                   minimumSize: Size(30, 50), // Mengatur lebar tombol
                 ),
                 child: Row(
