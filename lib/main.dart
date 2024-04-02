@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const carikegiatan(),
+        '/': (context) => const LoginPage(),
         '/dashboard': (context) => const DashboardPage(),
       },
     );
