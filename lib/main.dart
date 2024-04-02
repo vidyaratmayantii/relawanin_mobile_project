@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'PageLogin/loginPage.dart';
 import 'dashboard_page.dart';
 
 
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
+        '/': (context) => loginPage(),
         '/dashboard': (context) => const DashboardPage(),
       },
     );

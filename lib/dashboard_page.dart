@@ -216,7 +216,7 @@ class DashboardPage extends StatelessWidget {
               // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
             }
           },

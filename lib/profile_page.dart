@@ -123,24 +123,7 @@ class ProfilePage extends StatelessWidget {
                 trailing: Icon(Icons.chevron_right),
                 onTap: () {},
               ),
-              ListTile(
-                // Widget ListTile
-                contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Menambahkan padding horizontal
-                trailing: Center(
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Keluar',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF00897B),
-                      shadowColor: Colors.red,
-                    ),
-                  ),
-                ),
-              ),
+              
             ],
           ),
         ),
