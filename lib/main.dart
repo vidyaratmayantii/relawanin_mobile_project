@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
 import 'login_page.dart';
 import 'dashboard_page.dart';
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
+        '/': (context) => const carikegiatan(),
         '/dashboard': (context) => const DashboardPage(),
       },
     );
