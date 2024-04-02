@@ -15,6 +15,12 @@ class ProfilePage extends StatelessWidget {
         preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
         child: AppBar(
           backgroundColor: const Color(0xFF00897B),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
           flexibleSpace: Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -164,7 +170,7 @@ class ProfilePage extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
+        currentIndex: 3,
         unselectedItemColor: Colors.grey,
         selectedItemColor: Colors.green,
         onTap: (int index) {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'profile_page.dart'; // Import file profil_page.dart
+import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
+import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'profile_page.dart';
+import 'cari_kegiatan_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -15,6 +18,12 @@ class DashboardPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
+            leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -157,11 +166,33 @@ class DashboardPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: SizedBox(
-                          width: 150,
-                          child: Center(
-                            child: Text('Card ${index + 1}'),
+                      return GestureDetector(
+                        onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DetailKegiatan()),
+                        );
+                      },
+                        child: Card(
+                          child: SizedBox(
+                            width: 150,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Tambahkan gambar di sini
+                                Image.asset(
+                                  'assets/DetailGambar.png'
+                                ),
+                                // Tambahkan judul di sini
+                                Text(
+                                  'Card ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -190,11 +221,33 @@ class DashboardPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: SizedBox(
-                          width: 150,
-                          child: Center(
-                            child: Text('Card ${index + 1}'),
+                      return GestureDetector(
+                        onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DetailBeritaPage()),
+                        );
+                      },
+                        child: Card(
+                          child: SizedBox(
+                            width: 150,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Tambahkan gambar di sini
+                                Image.asset(
+                                  'assets/images.jpeg'
+                                ),
+                                // Tambahkan judul di sini
+                                Text(
+                                  'Card ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -217,6 +270,11 @@ class DashboardPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            }else if(index == 1){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const carikegiatan()),
               );
             }
           },

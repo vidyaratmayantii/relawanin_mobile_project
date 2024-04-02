@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'profile_page.dart';
+import 'dashboard_page.dart';
 
 class carikegiatan extends StatefulWidget {
   const carikegiatan({super.key});
@@ -65,7 +67,7 @@ class _carikegiatanState extends State<carikegiatan> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset('', height: 190, width: 349,fit: BoxFit.contain,),
+                        Image.asset('assets/DetailGambar.png', height: 190, width: 349,fit: BoxFit.contain,),
                         Padding(
                           padding: const EdgeInsets.only(left: 16, top:11),
                           child: Text("Judul Kegiatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20 ),),
@@ -101,6 +103,45 @@ class _carikegiatanState extends State<carikegiatan> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 1,
+        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.green,
+        onTap: (int index) {
+          // Tambahkan kondisi untuk navigasi ke halaman profil
+          if (index == 3) {
+            // Indeks 3 adalah indeks untuk tombol "Profile"
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()),
+            );
+          }else if(index == 0){
+            Navigator.push(
+            context,
+              MaterialPageRoute(builder: (context) => DashboardPage()),
+            );
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

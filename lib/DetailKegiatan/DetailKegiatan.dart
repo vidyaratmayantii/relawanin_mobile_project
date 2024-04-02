@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tubes_relawanin/DetailKegiatan/ButtonGabung.dart';
-import 'package:tubes_relawanin/DetailKegiatan/ButtonHubungi.dart';
-import 'package:tubes_relawanin/DetailKegiatan/MyCard.dart';
+import 'package:relawanin_mobile_project/DetailKegiatan/ButtonGabung.dart';
+import 'package:relawanin_mobile_project/DetailKegiatan/ButtonHubungi.dart';
+import 'package:relawanin_mobile_project/DetailKegiatan/MyCard.dart';
 
 
 class DetailKegiatan extends StatelessWidget {
+  static const String logoImage = 'assets/logo.png';
   DetailKegiatan({Key? key}) : super(key: key);
 
   void gabung() {}
@@ -19,10 +20,16 @@ class DetailKegiatan extends StatelessWidget {
           preferredSize: Size.fromHeight(80.0),
           child: AppBar(
             backgroundColor: Color(0xFF00897B),
+              leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
             centerTitle: true,
             title: Padding(
               padding: const EdgeInsets.only(top: 30.0),
-              child: Image.asset('lib/Images/logo.png'),
+              child: Image.asset(logoImage),
             ),
           ),
         ),
@@ -30,7 +37,7 @@ class DetailKegiatan extends StatelessWidget {
           scrollDirection: Axis.vertical,
           children: [
             Image.asset(
-              'lib/Images/DetailGambar.png',
+              'assets/DetailGambar.png',
               width: double.infinity,
               height: screenHeight * 0.5,
               fit: BoxFit.fill,
@@ -207,13 +214,13 @@ class DetailKegiatan extends StatelessWidget {
                         children: [
                           MyCard(
                               imagePath:
-                                  'lib/Images/Dokter8.jpg'), 
+                                  'assets/Dokter8.jpg'), 
                           MyCard(
                               imagePath:
-                                  'lib/Images/Dokter8.jpg'),
+                                  'assets/Dokter8.jpg'),
                           MyCard(
                               imagePath:
-                                  'lib/Images/Dokter8.jpg'), 
+                                  'assets/Dokter8.jpg'), 
                         ],
                       ),
                     ),

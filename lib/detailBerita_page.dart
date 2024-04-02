@@ -100,11 +100,33 @@ class DetailBeritaPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: SizedBox(
-                          width: 150,
-                          child: Center(
-                            child: Text('Card ${index + 1}'),
+                      return GestureDetector(
+                        onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DetailBeritaPage()),
+                        );
+                      },
+                        child: Card(
+                          child: SizedBox(
+                            width: 150,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Tambahkan gambar di sini
+                                Image.asset(
+                                  'assets/images.jpeg'
+                                ),
+                                // Tambahkan judul di sini
+                                Text(
+                                  'Card ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

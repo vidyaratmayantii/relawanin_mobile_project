@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/form.dart';
 
 class ButtonGabung extends StatefulWidget {
   final Function()? onTap;
@@ -18,7 +19,10 @@ class _MyButtonState extends State<ButtonGabung> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => form()),
+        );
+      },
       onTapDown: (_) => setState(() => isHovered = true),
       onTapUp: (_) => setState(() => isHovered = false),
       onTapCancel: () => setState(() => isHovered = false),
