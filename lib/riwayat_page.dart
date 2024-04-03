@@ -3,7 +3,6 @@ import 'package:relawanin_mobile_project/dashboard_page.dart';
 // import 'package:relawanin_mobile_project/editProfile_page.dart';
 import 'package:relawanin_mobile_project/profile_page.dart';
 
-
 class Riwayat extends StatelessWidget {
   const Riwayat({super.key});
 
@@ -11,24 +10,24 @@ class Riwayat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
-        child: AppBar(
-          backgroundColor: const Color(0xFF00897B),
-          flexibleSpace: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset(
-                DashboardPage.logoImage,
-                height: 150, // Ubah tinggi logo sesuai kebutuhan
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
+          child: AppBar(
+            backgroundColor: const Color(0xFF00897B),
+            flexibleSpace: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  DashboardPage.logoImage,
+                  height: 150, // Ubah tinggi logo sesuai kebutuhan
+                ),
               ),
             ),
           ),
         ),
-      ),
-      
-      body: SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -69,39 +68,40 @@ class Riwayat extends StatelessWidget {
             ],
           ),
         ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: Colors.green,
-        onTap: (int index) {
-          // Tambahkan kondisi untuk navigasi ke halaman profil
-          if (index == 3) {
-            // Indeks 3 adalah indeks untuk tombol "Profile"
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfilePage()),
-            );
-          }
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: 0,
+          unselectedItemColor: Colors.grey,
+          selectedItemColor: Colors.green,
+          onTap: (int index) {
+            // Tambahkan kondisi untuk navigasi ke halaman profil
+            if (index == 3) {
+              // Indeks 3 adalah indeks untuk tombol "Profile"
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              label: 'Notifications',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }

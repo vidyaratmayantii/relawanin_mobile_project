@@ -15,15 +15,10 @@ class DashboardPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0), 
+          preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
-            leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
+            automaticallyImplyLeading: false, // Menyembunyikan tombol "back"
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -168,11 +163,12 @@ class DashboardPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => DetailKegiatan()),
-                        );
-                      },
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailKegiatan()),
+                          );
+                        },
                         child: Card(
                           child: SizedBox(
                             width: 150,
@@ -180,9 +176,7 @@ class DashboardPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 // Tambahkan gambar di sini
-                                Image.asset(
-                                  'assets/DetailGambar.png'
-                                ),
+                                Image.asset('assets/DetailGambar.png'),
                                 // Tambahkan judul di sini
                                 Text(
                                   'Card ${index + 1}',
@@ -223,11 +217,12 @@ class DashboardPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => DetailBeritaPage()),
-                        );
-                      },
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailBeritaPage()),
+                          );
+                        },
                         child: Card(
                           child: SizedBox(
                             width: 150,
@@ -235,9 +230,7 @@ class DashboardPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 // Tambahkan gambar di sini
-                                Image.asset(
-                                  'assets/images.jpeg'
-                                ),
+                                Image.asset('assets/images.jpeg'),
                                 // Tambahkan judul di sini
                                 Text(
                                   'Card ${index + 1}',
@@ -262,14 +255,14 @@ class DashboardPage extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           currentIndex: 0,
           unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.green,
+          selectedItemColor: Color(0xFF00897B),
           onTap: (int index) {
             if (index == 3) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
               );
-            }else if(index == 1){
+            } else if (index == 1) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const carikegiatan()),
