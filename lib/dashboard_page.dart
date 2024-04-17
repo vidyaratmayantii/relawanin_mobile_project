@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
 import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
 import 'profile_page.dart';
 import 'cari_kegiatan_page.dart';
 
@@ -266,6 +267,11 @@ class DashboardPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const carikegiatan()),
+              );
+            } else if (index == 2 ) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             }
           },

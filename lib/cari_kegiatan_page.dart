@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
 import 'dashboard_page.dart';
+import 'notification_page.dart';
 
 class carikegiatan extends StatefulWidget {
   const carikegiatan({super.key});
@@ -142,6 +143,11 @@ class _carikegiatanState extends State<carikegiatan> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => DashboardPage()),
+              );
+            } else if (index == 2 ) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             }
           },

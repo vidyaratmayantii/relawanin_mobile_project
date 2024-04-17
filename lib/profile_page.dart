@@ -5,6 +5,7 @@ import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/editProfile_page.dart';
 import 'package:relawanin_mobile_project/riwayat_page.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -203,6 +204,11 @@ class ProfilePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => carikegiatan()),
+              );
+            } else if (index == 2 ) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             }
           },

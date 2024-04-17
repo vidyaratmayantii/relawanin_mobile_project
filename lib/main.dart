@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
 // import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
 import 'PageLogin/loginPage.dart';
 import 'dashboard_page.dart';
@@ -34,6 +35,8 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
         '/berita': (context) => const DetailBeritaPage(),
         '/cariKegiatan': (context) => const carikegiatan(),
+        '/notification_page': (context) => NotificationPage(),
+
         
       },
     );
