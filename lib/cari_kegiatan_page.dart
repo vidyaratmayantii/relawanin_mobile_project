@@ -1,20 +1,23 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
+
 import 'profile_page.dart';
 import 'dashboard_page.dart';
 import 'notification_page.dart';
+
+import 'package:flutter/widgets.dart';
+
 
 class carikegiatan extends StatefulWidget {
   const carikegiatan({super.key});
 
   @override
-  _carikegiatanState createState() => _carikegiatanState();
+  State<carikegiatan> createState() => _carikegiatanState();
 }
 
 class _carikegiatanState extends State<carikegiatan> {
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

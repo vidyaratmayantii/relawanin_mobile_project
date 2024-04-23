@@ -1,4 +1,10 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
+// import 'package:cari_kegiatan_page/cariberita.dart';
+// import 'package:cari_kegiatan_page/carikegiatan.dart';
+import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:flutter/material.dart';
+
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 // import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
@@ -11,13 +17,13 @@ import 'profile_page.dart';
 
 
 
+
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => loginPage(),
         '/dashboard': (context) => const DashboardPage(),
         '/detailKegiatan': (context) => DetailKegiatan(),
+        '/pageSearch': (context) => pageSearch(),
         '/kegiatan': (context) => const form(),
         '/profile': (context) => const ProfilePage(),
         '/berita': (context) => const DetailBeritaPage(),
@@ -39,6 +46,7 @@ class MyApp extends StatelessWidget {
 
         
       },
+
     );
   }
 }
