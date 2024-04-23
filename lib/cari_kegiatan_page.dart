@@ -20,15 +20,7 @@ class _carikegiatanState extends State<carikegiatan> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Search',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white),
-          ),
-          backgroundColor: Color.fromRGBO(0, 137, 123, 1),
-          centerTitle: true,
-        ),
+        
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(left: 32, right: 32, top: 8),

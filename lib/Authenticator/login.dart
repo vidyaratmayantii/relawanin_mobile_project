@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'SignUp.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
+import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/JsonModels/relawan.dart';
 import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 
@@ -30,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if(response == true){
       if(!mounted)return;
       Navigator.push(
-        context, MaterialPageRoute(builder: (context) => DetailKegiatan()));
+        context, MaterialPageRoute(builder: (context) => DashboardPage()));
     }else{
       setState(() {
         isLoginTrue = true;
@@ -56,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       Image.asset(
-                        'lib/Images/Ilustrasi_2-removebg-preview.png',
+                        'assets/Ilustrasi_2-removebg-preview.png',
                         height: 200,
                         width: 300,
                       ),
