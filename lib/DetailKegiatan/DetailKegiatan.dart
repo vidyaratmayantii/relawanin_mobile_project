@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tubes_relawanin/DetailKegiatan/ButtonGabung.dart';
-import 'package:tubes_relawanin/DetailKegiatan/ButtonHubungi.dart';
-import 'package:tubes_relawanin/DetailKegiatan/MyCard.dart';
+import 'ButtonGabung.dart';
+import 'ButtonHubungi.dart';
+import 'MyCard.dart';
 
 
 class DetailKegiatan extends StatelessWidget {
