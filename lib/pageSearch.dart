@@ -1,6 +1,9 @@
 import 'package:relawanin_mobile_project/cariberita.dart';
 import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
+import 'package:relawanin_mobile_project/dashboard_page.dart';
+import 'package:relawanin_mobile_project/profile_page.dart';
 
 class pageSearch extends StatefulWidget {
   const pageSearch({super.key});
@@ -93,7 +96,49 @@ final PageController _pageController = PageController();
           ),
         ),
       ),
-    )
+    ),
+    bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: 1,
+          unselectedItemColor: Colors.grey,
+          selectedItemColor: Color(0xFF00897B),
+          onTap: (int index) {
+            if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            } else if (index == 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DashboardPage()),
+              );
+            } else if (index == 2){
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
+              );
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              label: 'Notifications',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
     );
   }
 }

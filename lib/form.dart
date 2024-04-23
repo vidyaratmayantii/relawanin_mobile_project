@@ -3,25 +3,31 @@ import 'package:relawanin_mobile_project/dashboard_page.dart';
 
 class form extends StatelessWidget {
   const form({Key? key}) : super(key: key);
-
+  static const String logoImage = 'assets/logo.png';
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       // theme: ThemeData(
       //   primaryColor: Color.fromRGBO(0, 137, 123, 100),
       // ),
       home: Scaffold(
-        appBar: AppBar(
-          title: Image.asset('assets/logo.png'),
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        appBar:  PreferredSize(
+          preferredSize: const Size.fromHeight(60.0),
+          child: AppBar(
+            backgroundColor: const Color(0xFF00897B),
+            automaticallyImplyLeading: false,
+            flexibleSpace: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  logoImage,
+                  height: 150,
+                ),
+              ),
             ),
-          backgroundColor: Color.fromRGBO(0, 137, 123, 100),
-          centerTitle: true,
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

@@ -49,11 +49,11 @@ class _cariberitaState extends State<cariberita> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset('', height: 190, width: 349,fit: BoxFit.contain,),
+                            Image.asset('assets/images.jpeg', height: 190, width: 349,fit: BoxFit.contain,),
                             Padding(
                               padding: const EdgeInsets.only(left: 16, top:11),
                               child: Text("Judul berita", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20 ),),
-                            ),                      
+                            ),                    
                           ],
                         ),
                         ),
@@ -61,7 +61,6 @@ class _cariberitaState extends State<cariberita> {
                     }),
                   ),
       ],
-    )       
-    ;
+    );
   }
 }
