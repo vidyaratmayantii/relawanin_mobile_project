@@ -34,7 +34,7 @@ class _RegisterState extends State<Register> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'lib/Images/Ilustrasi_2-removebg-preview.png',
+                    'assets/Ilustrasi_2-removebg-preview.png',
                     height: 200,
                     width: 300,
                   ),

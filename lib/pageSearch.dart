@@ -62,7 +62,7 @@ final PageController _pageController = PageController();
                         labelColor: Colors.black,
                         indicatorColor: const Color.fromARGB(255, 255, 255, 255),
                         indicatorWeight: 5,
-                        indicatorPadding: EdgeInsets.only(left: -118, right: -127),
+                        indicatorPadding: EdgeInsets.only(left: -100, right: -75),
                         indicator: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(5),
