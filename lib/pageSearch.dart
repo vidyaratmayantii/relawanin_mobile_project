@@ -1,5 +1,5 @@
 import 'package:relawanin_mobile_project/cariberita.dart';
-import 'package:relawanin_mobile_project/carikegiatan.dart';
+import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
 import 'package:flutter/material.dart';
 
 class pageSearch extends StatefulWidget {
