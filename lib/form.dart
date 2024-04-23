@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/dashboard_page.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class form extends StatelessWidget {
+  const form({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -17,6 +14,12 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: Image.asset('assets/logo.png'),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
           backgroundColor: Color.fromRGBO(0, 137, 123, 100),
           centerTitle: true,
         ),
@@ -69,24 +72,24 @@ class MyApp extends StatelessWidget {
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
               ),
-              SizedBox(height: 10), //jaraknya dengan yang atas
+              SizedBox(height: 10), 
               Row(
-                mainAxisAlignment: MainAxisAlignment.start, // kiri button
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromRGBO(0, 137, 123, 1),
+                      backgroundColor: Color.fromRGBO(0, 137, 123, 1),
                     ),
                     child: Row(
                       mainAxisAlignment:
-                          MainAxisAlignment.center, //tulisan ditengah
+                          MainAxisAlignment.center, 
                       children: [
                         Icon(
                           Icons.add_circle,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 8), // jarak antara icon dan teks
+                        SizedBox(width: 8), 
                         Text(
                           'Upload CV',
                           style: TextStyle(color: Colors.white),
@@ -100,12 +103,12 @@ class MyApp extends StatelessWidget {
               SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Formulir terkirim'))); //sncakbar
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromRGBO(0, 137, 123, 1),
-                  minimumSize: Size(30, 50), // Mengatur lebar tombol
+                  backgroundColor: Color.fromRGBO(0, 137, 123, 1),
+                  minimumSize: Size(30, 50), 
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
