@@ -70,7 +70,7 @@ class Riwayat extends StatelessWidget {
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: 0,
+          currentIndex: 3,
           unselectedItemColor: Colors.grey,
           selectedItemColor: Colors.green,
           onTap: (int index) {

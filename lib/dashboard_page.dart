@@ -20,7 +20,7 @@ class DashboardPage extends StatelessWidget {
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
-            automaticallyImplyLeading: false, // Menyembunyikan tombol "back"
+            automaticallyImplyLeading: false,
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
