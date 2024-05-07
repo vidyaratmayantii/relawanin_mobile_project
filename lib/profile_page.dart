@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/PageLogin/loginPage.dart';
+import 'package:relawanin_mobile_project/form_komunitas.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/editProfile_page.dart';
@@ -147,7 +148,12 @@ class ProfilePage extends StatelessWidget {
                   leading: Icon(Icons.group),
                   title: Text('Bergabung Menjadi Komunitas'),
                   trailing: Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => formKomunitas()),
+                    );
+                  },
                 ),
                 TextButton(
                   onPressed: () {

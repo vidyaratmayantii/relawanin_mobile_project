@@ -15,6 +15,7 @@ import 'cari_kegiatan_page.dart';
 import 'form.dart';
 import 'detailBerita_page.dart';
 import 'profile_page.dart';
+import 'form_komunitas.dart';
 
 
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         '/berita': (context) => const DetailBeritaPage(),
         '/cariKegiatan': (context) => const carikegiatan(),
         '/notification_page': (context) => NotificationPage(),
+        '/form_komunitas': (context) => formKomunitas(),
 
         
       },
