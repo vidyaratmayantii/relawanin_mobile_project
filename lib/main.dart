@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
-
+import 'package:relawanin_mobile_project/Authenticator/signUp.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
+        '/register': (context) => Register(),
         '/dashboard': (context) => const DashboardPage(),
         '/detailKegiatan': (context) => DetailKegiatan(),
         '/pageSearch': (context) => pageSearch(),

@@ -1,14 +1,3 @@
-// To parse this JSON data, do
-//
-//     final relawan = relawanFromMap(jsonString);
-
-import 'package:meta/meta.dart';
-import 'dart:convert';
-
-Relawan relawanFromMap(String str) => Relawan.fromMap(json.decode(str));
-
-String relawanToMap(Relawan data) => json.encode(data.toMap());
-
 class Relawan {
   final int? usrId;
   final String? fullname;

@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -16,6 +18,12 @@ class _RegisterState extends State<Register> {
   final username = TextEditingController();
   final password = TextEditingController();
   final confirmPassword = TextEditingController();
+  final noTelp = TextEditingController();
+  String? gender;
+  String? provinsi;
+  DateTime? selectedDate;
+  final pekerjaan = TextEditingController();
+  final institusi = TextEditingController();
 
   final formkey = GlobalKey<FormState>();
 
@@ -25,7 +33,8 @@ class _RegisterState extends State<Register> {
   Future<void> registerUser() async {
     if (formkey.currentState!.validate()) {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text,
           password: password.text,
         );
@@ -33,11 +42,24 @@ class _RegisterState extends State<Register> {
         User? user = userCredential.user;
 
         if (user != null) {
+          // Generate UUID for user id
+          String userId = Uuid().v4();
+
           // Simpan data pengguna ke Firestore
-          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-            'fullname': fullname.text,
-            'email': email.text,
-            'username': username.text,
+          await FirebaseFirestore.instance.collection('users').doc(userId).set({
+            'id': userId,
+            'fullname': fullname.text ?? '',
+            'email': email.text ?? '',
+            'username': username.text ?? '',
+            'password': password.text ?? '',
+            'noTelphone': noTelp.text ?? '',
+            'gender': gender ?? '',
+            'tgl_lahir': selectedDate != null
+                ? DateFormat('yyyy-MM-dd').format(selectedDate!)
+                : '',
+            'pekerjaan': pekerjaan.text ?? '',
+            'institusi': institusi.text ?? '',
+            'provinsi': provinsi ?? '',
           });
 
           // Navigasi ke halaman login atau halaman lainnya
@@ -54,6 +76,69 @@ class _RegisterState extends State<Register> {
           SnackBar(content: Text(e.message ?? 'Registration failed')),
         );
       }
+    }
+  }
+
+  // Fungsi untuk mengisi daftar opsi dropdown
+  List<DropdownMenuItem<String>> dropdownItems() {
+    return [
+      'Nanggroe Aceh Darussalam',
+      'Sumatera Utara',
+      'Sumatera Selatan',
+      'Sumatera Barat',
+      'Bengkulu',
+      'Riau',
+      'Kepulauan Riau',
+      'Jambi',
+      'Lampung',
+      'Bangka Belitung',
+      'Kalimantan Barat',
+      'Kalimantan Timur',
+      'Kalimantan Selatan',
+      'Kalimantan Tengah',
+      'Kalimantan Utara',
+      'Banten',
+      'DKI Jakarta',
+      'Jawa Barat',
+      'Jawa Tengah',
+      'Daerah Istimewa Yogyakarta',
+      'Jawa Timur',
+      'Bali',
+      'Nusa Tenggara Timur',
+      'Nusa Tenggara Barat',
+      'Gorontalo',
+      'Sulawesi Barat',
+      'Sulawesi Tengah',
+      'Sulawesi Utara',
+      'Sulawesi Tenggara',
+      'Sulawesi Selatan',
+      'Maluku Utara',
+      'Maluku',
+      'Papua Barat',
+      'Papua' 'Papua Tengah',
+      'Papua Pegunungan',
+      'Papua Selatan',
+      'Papua Barat Daya'
+    ].map<DropdownMenuItem<String>>((String value) {
+      return DropdownMenuItem<String>(
+        value: value,
+        child: Text(value),
+      );
+    }).toList();
+  }
+
+  // Fungsi untuk menampilkan dialog pemilih tanggal
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
     }
   }
 
@@ -278,6 +363,217 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
 
+                  // No telphone
+                  Container(
+                    margin: EdgeInsets.all(11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Color.fromRGBO(0, 137, 123, 0.5),
+                          width: 2.0,
+                        ),
+                        color: Colors.white),
+                    child: TextFormField(
+                      controller: noTelp,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "no telphone is required!!!";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(
+                          Icons.person,
+                          color: Color.fromRGBO(0, 137, 123, 10),
+                        ),
+                        border: InputBorder.none,
+                        hintText: 'No telphone',
+                      ),
+                    ),
+                  ),
+
+                  // gender
+                  Container(
+                    margin: EdgeInsets.all(11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Color.fromRGBO(0, 137, 123, 0.5),
+                        width: 2.0,
+                      ),
+                      color: Colors.white,
+                    ),
+                    child: DropdownButtonFormField<String>(
+                      value: gender,
+                      onChanged: (newValue) {
+                        setState(() {
+                          gender = newValue;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please select your gender';
+                        }
+                        return null;
+                      },
+                      items: <String>['Male', 'Female']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      decoration: InputDecoration(
+                        icon: Icon(
+                          Icons.person,
+                          color: Color.fromRGBO(0, 137, 123, 10),
+                        ),
+                        border: InputBorder.none,
+                        hintText: 'Select Gender',
+                      ),
+                    ),
+                  ),
+
+                  // tanggal lahir
+                  Container(
+                    margin: EdgeInsets.all(11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Color.fromRGBO(0, 137, 123, 0.5),
+                        width: 2.0,
+                      ),
+                      color: Colors.white,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                      child: InputDecorator(
+                        decoration: InputDecoration(
+                          icon: Icon(
+                            Icons.calendar_today,
+                            color: Color.fromRGBO(0, 137, 123, 10),
+                          ),
+                          border: InputBorder.none,
+                          hintText: 'Tanggal Lahir',
+                        ),
+                        child: Text(
+                          selectedDate != null
+                              ? DateFormat('yyyy-MM-dd').format(selectedDate!)
+                              : 'Pilih Tanggal',
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // pekerjaan
+                  Container(
+                    margin: EdgeInsets.all(11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Color.fromRGBO(0, 137, 123, 0.5),
+                          width: 2.0,
+                        ),
+                        color: Colors.white),
+                    child: TextFormField(
+                      controller: pekerjaan,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Job is required!!!";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(
+                          Icons.person,
+                          color: Color.fromRGBO(0, 137, 123, 10),
+                        ),
+                        border: InputBorder.none,
+                        hintText: 'Job',
+                      ),
+                    ),
+                  ),
+
+                  // institusi
+                  Container(
+                    margin: EdgeInsets.all(11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Color.fromRGBO(0, 137, 123, 0.5),
+                          width: 2.0,
+                        ),
+                        color: Colors.white),
+                    child: TextFormField(
+                      controller: institusi,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "institusi is required!!!";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        icon: Icon(
+                          Icons.person,
+                          color: Color.fromRGBO(0, 137, 123, 10),
+                        ),
+                        border: InputBorder.none,
+                        hintText: 'Institusi',
+                      ),
+                    ),
+                  ),
+
+                  // provinsi
+                  Container(
+                    margin: EdgeInsets.all(11),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Color.fromRGBO(0, 137, 123, 0.5),
+                        width: 2.0,
+                      ),
+                      color: Colors.white,
+                    ),
+                    child: DropdownButtonFormField<String>(
+                      value: provinsi,
+                      onChanged: (newValue) {
+                        setState(() {
+                          provinsi = newValue;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select Provinsi';
+                        }
+                        return null;
+                      },
+                      items:
+                          dropdownItems(), // Memanggil fungsi dropdownItems untuk mengisi daftar opsi dropdown
+                      decoration: InputDecoration(
+                        icon: Icon(
+                          Icons.person,
+                          color: Color.fromRGBO(0, 137, 123, 10),
+                        ),
+                        border: InputBorder.none,
+                        hintText: 'Select Provinsi',
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 10),
 
                   // Button Sign up
@@ -311,7 +607,8 @@ class _RegisterState extends State<Register> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
                           );
                         },
                         child: const Text(

@@ -19,7 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signIn() async {
     if (formkey.currentState!.validate()) {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text.trim(),
           password: password.text.trim(),
         );
@@ -76,7 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       // email
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -106,7 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Password
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -137,7 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   isVisible = !isVisible;
                                 });
                               },
-                              icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(isVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
                               color: Color.fromRGBO(0, 137, 123, 10),
                             ),
                           ),
@@ -156,7 +161,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: signIn,
                           child: const Text(
                             'Sign In',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),

@@ -7,8 +7,7 @@ import 'package:relawanin_mobile_project/riwayat_page.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
-
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -108,12 +107,18 @@ class ProfilePage extends StatelessWidget {
                   title: Text('Edit Profil'),
                   trailing: Icon(Icons.chevron_right),
                   onTap: () {
+                    // Dapatkan ID pengguna saat ini
+                    String userId = FirebaseAuth.instance.currentUser!.uid;
+
+                    // Navigasi ke halaman EditProfilPage dengan menyertakan userId
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EditProfilPage()),
+                      MaterialPageRoute(
+                          builder: (context) => EditProfilPage(userId: userId)),
                     );
                   },
                 ),
+          
                 ListTile(
                   leading: Icon(Icons.history),
                   title: Text('Riwayat'),
@@ -213,7 +218,7 @@ class ProfilePage extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => pageSearch()),
               );
-            } else if (index == 2 ) {
+            } else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NotificationPage()),
