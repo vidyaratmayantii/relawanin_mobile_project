@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:relawanin_mobile_project/PageLogin/loginPage.dart';
-import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
+import 'package:relawanin_mobile_project/form_komunitas.dart';
+import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/editProfile_page.dart';
 import 'package:relawanin_mobile_project/riwayat_page.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
+import 'package:relawanin_mobile_project/Authenticator/login.dart';
+
+
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -146,13 +149,18 @@ class ProfilePage extends StatelessWidget {
                   leading: Icon(Icons.group),
                   title: Text('Bergabung Menjadi Komunitas'),
                   trailing: Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => formKomunitas()),
+                    );
+                  },
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => loginPage()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   },
                   child: const Text(
@@ -203,7 +211,7 @@ class ProfilePage extends StatelessWidget {
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => carikegiatan()),
+                MaterialPageRoute(builder: (context) => pageSearch()),
               );
             } else if (index == 2 ) {
               Navigator.push(

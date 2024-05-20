@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
-import 'cari_kegiatan_page.dart';
+import 'pageSearch.dart';
 import 'dashboard_page.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -13,7 +13,12 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: Text('Notifications',
+        style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,    
+              fontWeight: FontWeight.bold,
+            ),),
         backgroundColor: const Color(0xFF00897B),
       ),
       body: _buildNotificationList(), 
@@ -31,7 +36,7 @@ class _NotificationPageState extends State<NotificationPage> {
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const carikegiatan()),
+                MaterialPageRoute(builder: (context) => const pageSearch()),
               );
             } else if (index == 0){
                 Navigator.push(

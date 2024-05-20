@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
-import 'package:relawanin_mobile_project/JsonModels/relawan.dart';
-import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -20,6 +20,42 @@ class _RegisterState extends State<Register> {
   final formkey = GlobalKey<FormState>();
 
   bool isVisible = false;
+
+  // Fungsi untuk mendaftarkan pengguna
+  Future<void> registerUser() async {
+    if (formkey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.text,
+          password: password.text,
+        );
+
+        User? user = userCredential.user;
+
+        if (user != null) {
+          // Simpan data pengguna ke Firestore
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            'fullname': fullname.text,
+            'email': email.text,
+            'username': username.text,
+          });
+
+          // Navigasi ke halaman login atau halaman lainnya
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        print('Failed with error code: ${e.code}');
+        print(e.message);
+        // Tampilkan pesan error ke pengguna
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Registration failed')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +148,7 @@ class _RegisterState extends State<Register> {
                       },
                       decoration: const InputDecoration(
                         icon: Icon(
-                          Icons.person,
+                          Icons.email,
                           color: Color.fromRGBO(0, 137, 123, 10),
                         ),
                         border: InputBorder.none,
@@ -253,49 +289,15 @@ class _RegisterState extends State<Register> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: TextButton(
-                        onPressed: () {
-                          if (formkey.currentState!.validate()) {
-                            // Memanggil fungsi signUp untuk menambahkan pengguna baru
-                            final db = DatabaseHelper();
-                            db
-                                .signUp(Relawan(
-                                    username: username.text,
-                                    usrPass: password.text))
-                                .then((result) {
-                              if (result == -1) {
-                                // Jika gagal menambahkan pengguna karena username sudah ada
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text('Username already exists'),
-                                    content: Text(
-                                        'Please choose a different username.'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text('OK'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                // Jika berhasil menambahkan pengguna, kembali ke halaman login
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
-                                );
-                              }
-                            });
-                          }
-                        },
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w700),
-                        )),
+                      onPressed: registerUser,
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                   ),
 
                   SizedBox(height: 10),
@@ -308,19 +310,20 @@ class _RegisterState extends State<Register> {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()));
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          );
                         },
                         child: const Text(
                           "SIGN IN",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color.fromRGBO(0, 137, 123, 10)),
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromRGBO(0, 137, 123, 10),
+                          ),
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

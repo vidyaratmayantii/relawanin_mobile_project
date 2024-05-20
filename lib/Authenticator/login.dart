@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'SignUp.dart';
-import 'package:relawanin_mobile_project/dashboard_page.dart';
-import 'package:relawanin_mobile_project/JsonModels/relawan.dart';
-import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'signUp.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,34 +10,28 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // text password buat visible dan hide
-  final username = TextEditingController();
+  final email = TextEditingController();
   final password = TextEditingController();
-
-  // Buat Password hide
   bool isVisible = false;
-
-  //buat cek sign salah 
   bool isLoginTrue = false;
+  final formkey = GlobalKey<FormState>();
 
-  final db = DatabaseHelper();
-
-  login() async{
-    var response = await db
-      .login(Relawan(username: username.text, usrPass: password.text));
-    if(response == true){
-      if(!mounted)return;
-      Navigator.push(
-        context, MaterialPageRoute(builder: (context) => DashboardPage()));
-    }else{
-      setState(() {
-        isLoginTrue = true;
-      });
+  Future<void> signIn() async {
+    if (formkey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text.trim(),
+          password: password.text.trim(),
+        );
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          isLoginTrue = true;
+        });
+        print(e.message);
+      }
     }
   }
-
-  // Buat Validasi password
-  final formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 200,
                         width: 300,
                       ),
-          
                       Center(
                         child: Text(
                           'Welcome Back',
@@ -71,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-          
                       Center(
                         child: Text(
                           'Sign In to continue',
@@ -82,25 +72,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-          
                       const SizedBox(height: 15),
-                      // username
+                      // email
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Color.fromRGBO(0, 137, 123, 0.5),
-                              width: 2.0,
-                            ),
-                            color: Colors.white),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Color.fromRGBO(0, 137, 123, 0.5),
+                            width: 2.0,
+                          ),
+                          color: Colors.white,
+                        ),
                         child: TextFormField(
-                          controller: username,
+                          controller: email,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "username is required!!!";
+                              return "Email is required!!!";
                             }
                             return null;
                           },
@@ -110,28 +99,27 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Color.fromRGBO(0, 137, 123, 10),
                             ),
                             border: InputBorder.none,
-                            hintText: 'Username',
+                            hintText: 'Email',
                           ),
                         ),
                       ),
-          
                       // Password
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: Color.fromRGBO(0, 137, 123, 0.5),
-                              width: 2.0,
-                            ),
-                            color: Colors.white),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Color.fromRGBO(0, 137, 123, 0.5),
+                            width: 2.0,
+                          ),
+                          color: Colors.white,
+                        ),
                         child: TextFormField(
                           controller: password,
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return "password is required!!!";
+                              return "Password is required!!!";
                             }
                             return null;
                           },
@@ -145,22 +133,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintText: 'Password',
                             suffixIcon: IconButton(
                               onPressed: () {
-                                // Tempat buat visible atau hide password
                                 setState(() {
                                   isVisible = !isVisible;
                                 });
                               },
-                              icon: Icon(isVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
+                              icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
                               color: Color.fromRGBO(0, 137, 123, 10),
                             ),
                           ),
                         ),
                       ),
-          
-                      SizedBox(height: 10),
-          
+                      const SizedBox(height: 10),
                       // Button Sign in
                       Container(
                         height: 55,
@@ -170,32 +153,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: TextButton(
-                            onPressed: () {
-                              if (formkey.currentState!.validate()) {
-                                login();
-                              }
-                            },
-                            child: const Text(
-                              'Sign In',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700),
-                            )),
+                          onPressed: signIn,
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                          ),
+                        ),
                       ),
-          
-                      SizedBox(height: 10),
-          
-                      // button sign up
+                      const SizedBox(height: 10),
+                      // Button Sign up
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text("Don't have any account?"),
                           TextButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Register()));
+                              Navigator.pushNamed(context, '/register');
                             },
                             child: const Text(
                               "SIGN UP",
@@ -206,10 +179,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      isLoginTrue? const Text(
-                       "Username or password incorrect",
-                       style: TextStyle(color: Colors.red), 
-                      ): const SizedBox(),
+                      isLoginTrue
+                          ? const Text(
+                              "Email or password incorrect",
+                              style: TextStyle(color: Colors.red),
+                            )
+                          : const SizedBox(),
                     ],
                   ),
                 ),
