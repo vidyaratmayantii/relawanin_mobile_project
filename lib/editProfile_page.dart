@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfilPage extends StatefulWidget {
   final String userId;
@@ -27,83 +28,73 @@ class _EditProfilPageState extends State<EditProfilPage> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    getCurrentUserDocumentReference();
   }
 
-  void fetchData() {
-    print('Fetching data for user ID: ${widget.userId}');
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.userId)
-        .get()
-        .then((snapshot) {
-      if (snapshot.exists) {
-        print('User document found: ${snapshot.data()}');
-        setState(() {
-          fullname.text = snapshot['fullname'] ?? '';
-          email.text = snapshot['email'] ?? '';
-          username.text = snapshot['username'] ?? '';
-          noTelp.text = snapshot['noTelphone'] ?? '';
-          gender = snapshot['gender'];
-          pekerjaan.text = snapshot['pekerjaan'] ?? '';
-          institusi.text = snapshot['institusi'] ?? '';
-          provinsi = snapshot['provinsi'];
-          if (snapshot['tgl_lahir'] != null) {
-            _selectDate = DateTime.parse(snapshot['tgl_lahir']);
-          }
-        });
-      } else {
-        print('User document not found');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User document not found')),
-        );
-      }
-    }).catchError((error) {
-      print('Error fetching data: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch user data')),
-      );
-    });
-  }
+  Future<DocumentReference?> getCurrentUserDocumentReference() async {
+    // Get the currently logged-in user
+    User? user = FirebaseAuth.instance.currentUser;
 
-  Future<void> saveChanges() async {
-    if (formkey.currentState!.validate()) {
-      try {
-        final docRef =
-            FirebaseFirestore.instance.collection('users').doc(widget.userId);
-        final snapshot = await docRef.get();
+    // Check if the user exists
+    if (user != null) {
+      // Get the UID of the currently logged-in user
+      String uid = user.uid;
 
-        if (snapshot.exists) {
-          await docRef.update({
-            'fullname': fullname.text,
-            'email': email.text,
-            'username': username.text,
-            'noTelphone': noTelp.text,
-            'gender': gender,
-            'tgl_lahir': _selectDate != null
-                ? DateFormat('yyyy-MM-dd').format(_selectDate!)
-                : null,
-            'pekerjaan': pekerjaan.text,
-            'institusi': institusi.text,
-            'provinsi': provinsi,
-          });
+      // Create a reference to the user document with the corresponding UID
+      DocumentReference userDocRef =
+          FirebaseFirestore.instance.collection('users').doc(uid);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Changes saved successfully')),
-          );
-        } else {
-          print('User document not found during save');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('User document not found')),
-          );
-        }
-      } catch (e) {
-        print('Error saving changes: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save changes: $e')),
-        );
-      }
+      // Return the user document reference
+      return userDocRef;
+    } else {
+      // If no user is logged in, return null or perform appropriate handling
+      return null;
     }
+  }
+
+  Future<void> updateUserData(Map<String, dynamic> newData) async {
+    DocumentReference? userDocRef = await getCurrentUserDocumentReference();
+    if (userDocRef != null) {
+      try {
+        await userDocRef.update({
+          'fullname': newData['fullname'],
+          'email': newData['email'],
+          'username': newData['username'],
+          'noTelphone': newData['noTelphone'],
+          'gender': newData['gender'],
+          'tgl_lahir': newData['tgl_lahir'],
+          'pekerjaan': newData['pekerjaan'],
+          'institusi': newData['institusi'],
+          'provinsi': newData['provinsi'],
+        });
+        print('User data updated successfully');
+      } catch (error) {
+        print('Failed to update user data: $error');
+      }
+    } else {
+      print('User document reference not found');
+    }
+  }
+
+  // Dalam suatu fungsi, misalnya pada tombol 'Save Changes'
+  void saveChanges() {
+    // Mengumpulkan data dari inputan
+    Map<String, dynamic> newData = {
+      'fullname': fullname.text,
+      'email': email.text,
+      'username': username.text,
+      'noTelphone': noTelp.text,
+      'gender': gender,
+      'tgl_lahir': _selectDate != null
+          ? DateFormat('yyyy-MM-dd').format(_selectDate!)
+          : null,
+      'pekerjaan': pekerjaan.text,
+      'institusi': institusi.text,
+      'provinsi': provinsi,
+    };
+
+    // Memanggil fungsi updateUserData dengan data yang dikumpulkan
+    updateUserData(newData);
   }
 
   List<DropdownMenuItem<String>> dropdownItems() {
