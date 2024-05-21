@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
+import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/detailBerita_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
@@ -105,10 +105,38 @@ class DashboardPage extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        minimumSize: const Size(350, 50),
+                        minimumSize: const Size(100, 50),
                       ),
                       child: const Text(
                         'Kegiatan',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: buttonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        minimumSize: const Size(100, 50),
+                      ),
+                      child: const Text(
+                        'Webinar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: buttonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        minimumSize: const Size(100, 50),
+                      ),
+                      child: const Text(
+                        'Project',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -119,7 +147,7 @@ class DashboardPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Rekomendasi Kegiatan',
+                  'Rekomendasi untuk mu',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -128,7 +156,7 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-          StreamBuilder(
+              StreamBuilder(
                 stream: FirebaseFirestore.instance.collection('activities').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -150,23 +178,55 @@ class DashboardPage extends StatelessWidget {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DetailKegiatan()),
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailKegiatan(activityData: activity.data() as Map<String, dynamic>),
+                                  ),
                                 );
                               },
+
                               child: Card(
                                 child: SizedBox(
                                   width: 150,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // Tambahkan gambar di sini
-                                      Image.asset('assets/DetailGambar.png'),
-                                      // Tambahkan judul di sini
-                                      Text(
-                                        activity['namaKegiatan'], // Menggunakan data dari Firestore
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
+                                      // Mengambil gambar dari Firebase Storage jika imageUrl tidak kosong
+                                      if (activity['imageUrl'] != null)
+                                        Image.network(
+                                          activity['imageUrl'], // URL gambar dari Firestore
+                                          width: 150,
+                                          height: 125,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      // Menampilkan judul di sini
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                                        child: Text(
+                                          activity['namaKegiatan'], // Menggunakan data dari Firestore
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      // Menampilkan nama lokasi
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Lokasi: ${activity['lokasi']}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                      // Menampilkan tanggal kegiatan
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Tanggal: ${activity['tanggalKegiatan']}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -207,7 +267,8 @@ class DashboardPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => DetailBeritaPage()),
+                              builder: (context) => DetailBeritaPage(),
+                            ),
                           );
                         },
                         child: Card(

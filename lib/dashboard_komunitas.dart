@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
+import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/detailBerita_page.dart';
 import 'package:relawanin_mobile_project/historyActivities.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
@@ -143,23 +143,55 @@ class DashboardKomunitas extends StatelessWidget {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => DetailKegiatan()),
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailKegiatan(activityData: activity.data() as Map<String, dynamic>),
+                                  ),
                                 );
                               },
+
                               child: Card(
                                 child: SizedBox(
                                   width: 150,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // Tambahkan gambar di sini
-                                      Image.asset('assets/DetailGambar.png'),
-                                      // Tambahkan judul di sini
-                                      Text(
-                                        activity['namaKegiatan'], // Menggunakan data dari Firestore
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
+                                      // Mengambil gambar dari Firebase Storage jika imageUrl tidak kosong
+                                      if (activity['imageUrl'] != null)
+                                        Image.network(
+                                          activity['imageUrl'], // URL gambar dari Firestore
+                                          width: 150,
+                                          height: 125,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      // Menampilkan judul di sini
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                                        child: Text(
+                                          activity['namaKegiatan'], // Menggunakan data dari Firestore
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      // Menampilkan nama lokasi
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Lokasi: ${activity['lokasi']}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                      // Menampilkan tanggal kegiatan
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Tanggal: ${activity['tanggalKegiatan']}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
                                         ),
                                       ),
                                     ],

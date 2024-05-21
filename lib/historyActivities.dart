@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:relawanin_mobile_project/editActivity.dart';
+
+import 'DetailKegiatan/DetailKegiatan.dart';
 
 class MyActivitiesList extends StatelessWidget {
   @override
@@ -16,8 +21,14 @@ class MyActivitiesList extends StatelessWidget {
 class MyActivitiesListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Dapatkan UID pengguna yang saat ini masuk
+    String? uid = FirebaseAuth.instance.currentUser?.uid;
+
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('activities').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('activities')
+          .where('userId', isEqualTo: uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -41,7 +52,7 @@ class MyActivitiesListView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailActivity(activity: activity),
+                      builder: (context) => DetailKegiatan(activityData: activity.data() as Map<String, dynamic>),
                     ),
                   );
                 },
@@ -56,6 +67,24 @@ class MyActivitiesListView extends StatelessWidget {
                         Text('Waktu Pelaksanaan: ${activity['tanggalKegiatan'] ?? 'N/A'}'),
                       ],
                     ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            // Handle logic for updating activity
+                            _updateActivity(context, activity);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            _deleteActivity(context, activity);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -65,30 +94,43 @@ class MyActivitiesListView extends StatelessWidget {
       },
     );
   }
+
+  void _updateActivity(BuildContext context, DocumentSnapshot activity) {
+  // Buka layar formulir untuk memperbarui aktivitas
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => EditActivityForm(activity: activity),
+    ),
+  );
 }
 
-class DetailActivity extends StatelessWidget {
-  final QueryDocumentSnapshot activity;
+  void _deleteActivity(BuildContext context, DocumentSnapshot activity) async {
+  try {
+    // Dapatkan URL gambar dari dokumen aktivitas
+    String? imageUrl = activity['imageUrl'];
 
-  const DetailActivity({Key? key, required this.activity}) : super(key: key);
+    // Hapus dokumen aktivitas dari Firestore
+    await FirebaseFirestore.instance
+        .collection('activities')
+        .doc(activity.id)
+        .delete();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(activity['namaKegiatan'] ?? 'No name'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Nama Kegiatan: ${activity['namaKegiatan'] ?? 'N/A'}'),
-            Text('Batas Registrasi: ${activity['batasRegistrasi'] ?? 'N/A'}'),
-            Text('Lokasi: ${activity['lokasi'] ?? 'N/A'}'),
-            Text('Waktu Pelaksanaan: ${activity['tanggalKegiatan'] ?? 'N/A'}'),
-          ],
-        ),
-      ),
+    // Jika terdapat URL gambar, hapus juga gambar dari Firebase Storage
+    if (imageUrl != null) {
+      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Activity deleted successfully')),
+    );
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to delete activity: $error')),
     );
   }
 }
+
+}
+
+

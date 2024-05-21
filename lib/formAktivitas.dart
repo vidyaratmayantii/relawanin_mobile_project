@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 class ActivityForm extends StatefulWidget {
   @override
@@ -20,6 +25,8 @@ class _ActivityFormState extends State<ActivityForm> {
 
   DateTime? _selectedDateKegiatan;
   DateTime? _selectedDateRegistrasi;
+  XFile? _image;
+  String? _imageUrl;
 
   void _presentDatePickerKegiatan() {
     showDatePicker(
@@ -57,15 +64,50 @@ class _ActivityFormState extends State<ActivityForm> {
     });
   }
 
+  Future<void> _getImage() async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future<String?> _uploadImage(File imageFile) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        _showErrorSnackBar('User not logged in');
+        return null;
+      }
+      String fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
+      Reference storageReference = FirebaseStorage.instance.ref().child('activity_images/$fileName');
+      UploadTask uploadTask = storageReference.putFile(File(imageFile.path));
+      TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      _showErrorSnackBar('Failed to upload image: $e');
+      return null;
+    }
+  }
+
+
+
+
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Get the current user's UID
       User? user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         _showErrorSnackBar('User not logged in');
         return;
       }
       String uid = user.uid;
+
+      if (_image != null) {
+
+        File imageFile = File(_image!.path);
+        _imageUrl = await _uploadImage(imageFile);
+      }
+
 
       Map<String, dynamic> newActivity = {
         'namaKegiatan': _controllerNamaKegiatan.text,
@@ -76,26 +118,27 @@ class _ActivityFormState extends State<ActivityForm> {
         'batasRegistrasi': _controllerBatasRegistrasi.text,
         'lokasi': _controllerLokasi.text,
         'estimasiPoint': int.tryParse(_controllerEstimasiPoint.text) ?? 0,
+        'userId': uid,
+        'imageUrl': _imageUrl,
       };
 
-      // Use the UID as the document ID
-      await FirebaseFirestore.instance
-          .collection('activities')
-          .doc(uid)
-          .set(newActivity);
+      await FirebaseFirestore.instance.collection('activities').add(newActivity);
 
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Activity Registered Successfully')));
 
-            _controllerNamaKegiatan.clear();
-            _controllerDeskripsiKegiatan.clear();
-            _controllerAktivitasKegiatan.clear();
-            _controllerKetentuanKegiatan.clear();
-            _controllerTanggalKegiatan.clear();
-            _controllerBatasRegistrasi.clear();
-            _controllerLokasi.clear();
-            _controllerEstimasiPoint.clear();
-      // Clear the form fields
+      _controllerNamaKegiatan.clear();
+      _controllerDeskripsiKegiatan.clear();
+      _controllerAktivitasKegiatan.clear();
+      _controllerKetentuanKegiatan.clear();
+      _controllerTanggalKegiatan.clear();
+      _controllerBatasRegistrasi.clear();
+      _controllerLokasi.clear();
+      _controllerEstimasiPoint.clear();
+      setState(() {
+        _image = null;
+        _imageUrl = null;
+      });
       _formKey.currentState!.reset();
     }
   }
@@ -278,6 +321,34 @@ class _ActivityFormState extends State<ActivityForm> {
                     }
                     return null;
                   },
+                ),
+              ),
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: _getImage,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Unggah Gambar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 8), 
+                    Container(
+                      width: 350,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: _image != null
+                          ? Image.file(File(_image!.path), fit: BoxFit.cover)
+                          : Icon(Icons.add_photo_alternate, size: 40, color: Colors.grey),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 20),
