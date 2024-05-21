@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Controller/controllerUser.dart';
-import 'package:relawanin_mobile_project/Models/userModel.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 import 'package:relawanin_mobile_project/profile_page.dart';
 import 'package:intl/intl.dart';
 
@@ -14,6 +16,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final UserController _userController = UserController();
   Map<String, dynamic>? userData;
+  File? _profilePic;
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -45,6 +48,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     _getUserDataFromDatabase();
+    _loadProfilePic();
   }
 
   void _getUserDataFromDatabase() async {
@@ -84,11 +88,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     await _userController.updateData(userData);
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // getUserData();
-  // }
+  void _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      await DatabaseHelper().saveProfilePic(pickedFile.path);
+
+      setState(() {
+        _profilePic = imageFile;
+      });
+    }
+  }
+
+  Future<void> _loadProfilePic() async {
+    String? profilePicPath = await DatabaseHelper().getProfilePic();
+    if (profilePicPath != null) {
+      setState(() {
+        _profilePic = File(profilePicPath);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,16 +121,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
             backgroundColor: const Color(0xFF00897B),
             flexibleSpace: Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Edit Profil',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      _profilePic == null
+                          ? Text('No profile picture')
+                          : Image.file(_profilePic!),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _pickImage,
+                        child: Text('Pick Image'),
+                      ),
+                    ],
+                  )),
             ),
           ),
         ),
