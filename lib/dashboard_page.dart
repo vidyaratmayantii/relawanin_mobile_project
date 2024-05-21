@@ -1,6 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'profile_page.dart'; // Import file profil_page.dart
+import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
+import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
+import 'package:relawanin_mobile_project/pageSearch.dart';
+import 'profile_page.dart';
+import 'cari_kegiatan_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -13,15 +18,16 @@ class DashboardPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
+          preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
+            automaticallyImplyLeading: false,
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
                   logoImage,
-                  height: 150, // Ubah tinggi logo sesuai kebutuhan
+                  height: 150,
                 ),
               ),
             ),
@@ -196,11 +202,32 @@ class DashboardPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: SizedBox(
-                          width: 150,
-                          child: Center(
-                            child: Text('Card ${index + 1}'),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailBeritaPage()),
+                          );
+                        },
+                        child: Card(
+                          child: SizedBox(
+                            width: 150,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Tambahkan gambar di sini
+                                Image.asset('assets/images.jpeg'),
+                                // Tambahkan judul di sini
+                                Text(
+                                  'Card ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -215,14 +242,22 @@ class DashboardPage extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           currentIndex: 0,
           unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.green,
+          selectedItemColor: Color(0xFF00897B),
           onTap: (int index) {
-            // Tambahkan kondisi untuk navigasi ke halaman profil
             if (index == 3) {
-              // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            } else if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const pageSearch()),
+              );
+            } else if (index == 2 ) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             }
           },

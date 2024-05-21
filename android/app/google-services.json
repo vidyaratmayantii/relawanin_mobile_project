@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "575810152008",
+    "project_id": "relawanin-mobile-project",
+    "storage_bucket": "relawanin-mobile-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575810152008:android:37c7144b793e4e8664da7d",
+        "android_client_info": {
+          "package_name": "com.example.relawanin_mobile_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFsNGLYELPjtPelPRrzuV0WxvAfv8OHyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
