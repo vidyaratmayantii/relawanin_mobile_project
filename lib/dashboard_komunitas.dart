@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'profile_page.dart'; // Import file profil_page.dart
+import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
+import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'package:relawanin_mobile_project/historyActivities.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
+import 'package:relawanin_mobile_project/pageSearch.dart';
+import 'profile_page.dart';
+import 'formAktivitas.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class DashboardKomunitas extends StatelessWidget {
+  const DashboardKomunitas({super.key});
 
   static const String backgroundImage = 'assets/background_image.png';
   static const String logoImage = 'assets/logo.png';
@@ -13,15 +19,16 @@ class DashboardPage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0), // Atur tinggi AppBar
+          preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
+            automaticallyImplyLeading: false,
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
                   logoImage,
-                  height: 150, // Ubah tinggi logo sesuai kebutuhan
+                  height: 150,
                 ),
               ),
             ),
@@ -39,36 +46,6 @@ class DashboardPage extends StatelessWidget {
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(0.6), BlendMode.darken),
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Claim poin dengan \n menjadi aktivis!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Lanjutkan'),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Dapatkan penawaran terbaik \n dengan menukarkan poin',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
@@ -92,17 +69,39 @@ class DashboardPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // Navigasi ke halaman lain
+                       Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ActivityForm()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: buttonColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        minimumSize: const Size(350, 50),
+                        minimumSize: const Size(100, 50),
                       ),
                       child: const Text(
-                        'Kegiatan',
+                        'Tambah Kegiatan',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                       Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyActivitiesList()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: buttonColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        minimumSize: const Size(100, 50),
+                      ),
+                      child: const Text(
+                        'Kegiatan Saya',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -113,7 +112,7 @@ class DashboardPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Rekomendasi Kegiatan',
+                  'Kegiatan Saya',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -122,7 +121,7 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-          StreamBuilder(
+              StreamBuilder(
                 stream: FirebaseFirestore.instance.collection('activities').snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -196,11 +195,32 @@ class DashboardPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     itemBuilder: (context, index) {
-                      return Card(
-                        child: SizedBox(
-                          width: 150,
-                          child: Center(
-                            child: Text('Card ${index + 1}'),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailBeritaPage()),
+                          );
+                        },
+                        child: Card(
+                          child: SizedBox(
+                            width: 150,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Tambahkan gambar di sini
+                                Image.asset('assets/images.jpeg'),
+                                // Tambahkan judul di sini
+                                Text(
+                                  'Card ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -215,14 +235,22 @@ class DashboardPage extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
           currentIndex: 0,
           unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.green,
+          selectedItemColor: Color(0xFF00897B),
           onTap: (int index) {
-            // Tambahkan kondisi untuk navigasi ke halaman profil
             if (index == 3) {
-              // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const ProfilePage()),
+              );
+            } else if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const pageSearch()),
+              );
+            } else if (index == 2 ) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
               );
             }
           },
