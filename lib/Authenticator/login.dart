@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'signUp.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,10 +20,42 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> signIn() async {
     if (formkey.currentState!.validate()) {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text.trim(),
           password: password.text.trim(),
         );
+
+        // Akses data pengguna yang sudah masuk
+        User? user = userCredential.user;
+        if (user != null) {
+          String uid = user.uid;
+
+          // Dapatkan data tambahan dari Firestore menggunakan UID pengguna
+          DocumentSnapshot userData = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .get();
+
+          // Pastikan dokumen pengguna ditemukan sebelum mencoba mengakses data
+          if (userData.exists) {
+            // Melakukan pengecekan tipe untuk memastikan data() mengembalikan Map<String, dynamic>
+            if (userData.data() is Map<String, dynamic>) {
+              Map<String, dynamic> userDataMap =
+                  userData.data() as Map<String, dynamic>;
+
+              // Lanjutkan dengan penggunaan userDataMap...
+            } else {
+              // Penanganan jika data tidak sesuai dengan yang diharapkan
+              print('Data pengguna tidak sesuai dengan format yang diharapkan');
+            }
+          } else {
+            // Penanganan jika dokumen pengguna tidak ditemukan
+            print('Dokumen pengguna tidak ditemukan');
+          }
+        }
+
+        // Navigasi ke layar dashboard jika login berhasil
         Navigator.pushReplacementNamed(context, '/dashboard');
       } on FirebaseAuthException catch (e) {
         setState(() {
@@ -32,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +110,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       // email
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -106,7 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Password
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -137,7 +173,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   isVisible = !isVisible;
                                 });
                               },
-                              icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(isVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
                               color: Color.fromRGBO(0, 137, 123, 10),
                             ),
                           ),
@@ -156,7 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: signIn,
                           child: const Text(
                             'Sign In',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),

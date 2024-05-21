@@ -5,6 +5,7 @@ import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
+import 'package:relawanin_mobile_project/Authenticator/signUp.dart';
 import 'dashboard_page.dart';
 import 'cari_kegiatan_page.dart';
 import 'form.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
+        '/register': (context) => const Register(),
         '/dashboard': (context) => const DashboardPage(),
         '/detailKegiatan': (context) => DetailKegiatan(),
         '/pageSearch': (context) => pageSearch(),
