@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'profile_page.dart'; // Import file profil_page.dart
+=======
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:relawanin_mobile_project/DetailKegiatan/detailKegiatan.dart';
+import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'package:relawanin_mobile_project/notification_page.dart';
+import 'package:relawanin_mobile_project/pageSearch.dart';
+import 'package:relawanin_mobile_project/profile_page.dart';
+import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
+>>>>>>> Stashed changes
 
 class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+  const DashboardPage({Key? key});
 
   static const String backgroundImage = 'assets/background_image.png';
   static const String logoImage = 'assets/logo.png';
+
   @override
   Widget build(BuildContext context) {
     Color buttonColor = const Color(0xFF00897B);
@@ -157,11 +168,38 @@ class DashboardPage extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
                     itemBuilder: (context, index) {
+<<<<<<< Updated upstream
                       return Card(
                         child: SizedBox(
                           width: 150,
                           child: Center(
                             child: Text('Card ${index + 1}'),
+=======
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetailKegiatan()),
+                          );
+                        },
+                        child: Card(
+                          child: SizedBox(
+                            width: 150,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset('assets/DetailGambar.png'),
+                                Text(
+                                  'Card ${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+>>>>>>> Stashed changes
                           ),
                         ),
                       );
@@ -186,6 +224,7 @@ class DashboardPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: SizedBox(
                   height: 200,
+<<<<<<< Updated upstream
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 4,
@@ -197,6 +236,58 @@ class DashboardPage extends StatelessWidget {
                             child: Text('Card ${index + 1}'),
                           ),
                         ),
+=======
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('berita').snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Center(child: Text('No news available'));
+                      }
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var berita = snapshot.data!.docs[index];
+                          var imageData = berita['img'];
+                          ImageProvider imageProvider;
+                          imageProvider = NetworkImage(imageData);
+
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailBeritaPage(
+                                    berita: berita,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              child: SizedBox(
+                                width: 150,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image(image: imageProvider),
+                                    Text(
+                                      berita['judul'],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+>>>>>>> Stashed changes
                       );
                     },
                   ),
@@ -217,6 +308,19 @@ class DashboardPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProfilePage()),
+<<<<<<< Updated upstream
+=======
+              );
+            } else if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => pageSearch()),
+              );
+            } else if (index == 2 ) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationPage()),
+>>>>>>> Stashed changes
               );
             }
           },
@@ -243,3 +347,5 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
+
+                                         
