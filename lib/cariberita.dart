@@ -43,19 +43,7 @@ class _cariberitaState extends State<cariberita> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text("Filter", style: TextStyle(color: Colors.grey, fontSize: 20))
-            ],
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              hintText: "Cari",
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-            ),
-          ),
+        
           Padding(
             padding: const EdgeInsets.only(top: 13),
             child: Text("Teratas saat ini",
