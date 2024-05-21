@@ -29,6 +29,7 @@ class AuthController {
     String password,
     String username,
     String confirmPassword,
+    String role,
   ) async {
     try {
       final UserCredential userCredential =
@@ -44,6 +45,7 @@ class AuthController {
           'username': username,
           'password': password,
           'confirmPassword': confirmPassword,
+          'role': 'relawan',
         });
       } catch (e) {
         logger.e("Error registering user: $e");
