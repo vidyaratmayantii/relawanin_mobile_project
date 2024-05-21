@@ -38,28 +38,23 @@ class _LoginScreenState extends State<LoginScreen> {
               .doc(uid)
               .get();
 
-          // Pastikan dokumen pengguna ditemukan sebelum mencoba mengakses data
           if (userData.exists) {
-            // Melakukan pengecekan tipe untuk memastikan data() mengembalikan Map<String, dynamic>
             if (userData.data() is Map<String, dynamic>) {
               Map<String, dynamic> userDataMap = userData.data() as Map<String, dynamic>;
 
-              // Memeriksa role pengguna dan mengarahkan ke dashboard yang sesuai
               String role = userDataMap['role'];
               if (role == 'komunitas') {
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardKomunitas()));
               } else if (role == 'relawan') {
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardPage()));
               } else {
-                // Penanganan jika role tidak dikenal
+              
                 print('Role tidak dikenal: $role');
               }
             } else {
-              // Penanganan jika data tidak sesuai dengan yang diharapkan
               print('Data pengguna tidak sesuai dengan format yang diharapkan');
             }
           } else {
-            // Penanganan jika dokumen pengguna tidak ditemukan
             print('Dokumen pengguna tidak ditemukan');
           }
         }
