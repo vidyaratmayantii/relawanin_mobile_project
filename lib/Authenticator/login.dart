@@ -3,33 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:relawanin_mobile_project/dashboard_komunitas.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:relawanin_mobile_project/Controller/authControllerUser.dart';
-import 'package:logger/logger.dart';
+import 'signUp.dart';
 
 class LoginScreen extends StatefulWidget {
-  final AuthController? login;
-  const LoginScreen({super.key, this.login});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
   bool isVisible = false;
   bool isLoginTrue = false;
-
-  late final AuthController _login;
-  final Logger _logger = Logger();
-
-  @override
-  void initState() {
-    super.initState();
-    _login = widget.login ??
-        AuthController(); // Or provide your default RegisterService constructor
-  }
+  final formkey = GlobalKey<FormState>();
 
   Future<void> signIn() async {
     if (formkey.currentState!.validate()) {
@@ -90,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Form(
+                  key: formkey,
                   child: Column(
                     children: [
                       Image.asset(
@@ -118,11 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 15),
-                      // Email
+                      // email
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -132,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                         child: TextFormField(
-                          controller: emailController,
+                          controller: email,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Email is required!!!";
@@ -152,8 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Password
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -163,14 +150,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                         child: TextFormField(
-                          controller: passwordController,
+                          controller: password,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Password is required!!!";
                             }
                             return null;
                           },
-                          obscureText: !isVisible,
+                          obscureText: isVisible,
                           decoration: InputDecoration(
                             icon: Icon(
                               Icons.lock,
@@ -184,11 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   isVisible = !isVisible;
                                 });
                               },
-                              icon: Icon(
-                                isVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
+                              icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
                               color: Color.fromRGBO(0, 137, 123, 10),
                             ),
                           ),
@@ -207,9 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: signIn,
                           child: const Text(
                             'Sign In',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
