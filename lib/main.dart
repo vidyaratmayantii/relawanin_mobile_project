@@ -1,25 +1,20 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-// import 'package:cari_kegiatan_page/cariberita.dart';
-// import 'package:cari_kegiatan_page/carikegiatan.dart';
-import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:relawanin_mobile_project/pageSearch.dart';
 
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
-// import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
-import 'PageLogin/loginPage.dart';
 import 'dashboard_page.dart';
 import 'cari_kegiatan_page.dart';
 import 'form.dart';
 import 'detailBerita_page.dart';
 import 'profile_page.dart';
+import 'form_komunitas.dart';
 
-
-
-
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -44,10 +39,8 @@ class MyApp extends StatelessWidget {
         '/berita': (context) => const DetailBeritaPage(),
         '/cariKegiatan': (context) => const carikegiatan(),
         '/notification_page': (context) => NotificationPage(),
-
-        
+        '/form_komunitas': (context) => formKomunitas(),
       },
-
     );
   }
 }
