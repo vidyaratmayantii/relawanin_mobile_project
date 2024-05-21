@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'package:relawanin_mobile_project/historyActivities.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'profile_page.dart';
-import 'cari_kegiatan_page.dart';
+import 'formAktivitas.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+class DashboardKomunitas extends StatelessWidget {
+  const DashboardKomunitas({super.key});
 
   static const String backgroundImage = 'assets/background_image.png';
   static const String logoImage = 'assets/logo.png';
@@ -47,36 +48,6 @@ class DashboardPage extends StatelessWidget {
                         Colors.black.withOpacity(0.6), BlendMode.darken),
                   ),
                 ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Claim poin dengan \n menjadi aktivis!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Lanjutkan'),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Dapatkan penawaran terbaik \n dengan menukarkan poin',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
               const Padding(
@@ -98,7 +69,10 @@ class DashboardPage extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        // Navigasi ke halaman lain
+                       Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ActivityForm()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: buttonColor,
@@ -108,12 +82,17 @@ class DashboardPage extends StatelessWidget {
                         minimumSize: const Size(100, 50),
                       ),
                       child: const Text(
-                        'Kegiatan',
+                        'Tambah Kegiatan',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                       Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyActivitiesList()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: buttonColor,
                         shape: RoundedRectangleBorder(
@@ -122,21 +101,7 @@ class DashboardPage extends StatelessWidget {
                         minimumSize: const Size(100, 50),
                       ),
                       child: const Text(
-                        'Webinar',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        minimumSize: const Size(100, 50),
-                      ),
-                      child: const Text(
-                        'Project',
+                        'Kegiatan Saya',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -147,7 +112,7 @@ class DashboardPage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  'Rekomendasi untuk mu',
+                  'Kegiatan Saya',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
@@ -267,8 +232,7 @@ class DashboardPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailBeritaPage(),
-                            ),
+                                builder: (context) => DetailBeritaPage()),
                           );
                         },
                         child: Card(

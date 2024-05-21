@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:relawanin_mobile_project/dashboard_komunitas.dart';
+import 'package:relawanin_mobile_project/dashboard_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:relawanin_mobile_project/Controller/authControllerUser.dart';
 import 'package:logger/logger.dart';
 
@@ -29,50 +32,50 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> signIn() async {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-    if (email.isEmpty || password.isEmpty) {
-      _logger.e("Email or password is empty");
-      return;
-    }
-
-    try {
-      final user = await _login.signInWithEmailAndPassword(email, password);
-      if (user != null) {
-        // Ambil data pengguna dari Firestore
-        final userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-
-        if (userDoc.exists) {
-          _logger.i("Login successful");
-
-          // Navigasi ke dashboard atau layar lain yang diinginkan
-          Navigator.pushReplacementNamed(context, '/dashboard');
-        } else {
-          _logger.w("User data not found in Firestore");
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('User data not found. Please contact support.'),
-            ),
-          );
-        }
-      } else {
-        _logger.w("Login failed");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login failed. Please try again.'),
-          ),
+    if (formkey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text.trim(),
+          password: password.text.trim(),
         );
+
+        // Akses data pengguna yang sudah masuk
+        User? user = userCredential.user;
+        if (user != null) {
+          String uid = user.uid;
+
+          // Dapatkan data tambahan dari Firestore menggunakan UID pengguna
+          DocumentSnapshot userData = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .get();
+
+          if (userData.exists) {
+            if (userData.data() is Map<String, dynamic>) {
+              Map<String, dynamic> userDataMap = userData.data() as Map<String, dynamic>;
+
+              String role = userDataMap['role'];
+              if (role == 'komunitas') {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardKomunitas()));
+              } else if (role == 'relawan') {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardPage()));
+              } else {
+              
+                print('Role tidak dikenal: $role');
+              }
+            } else {
+              print('Data pengguna tidak sesuai dengan format yang diharapkan');
+            }
+          } else {
+            print('Dokumen pengguna tidak ditemukan');
+          }
+        }
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          isLoginTrue = true;
+        });
+        print(e.message);
       }
-    } catch (e) {
-      _logger.e("Error during sign in: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error during sign in: $e'),
-        ),
-      );
     }
   }
 
