@@ -1,35 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'signUp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:relawanin_mobile_project/Controller/authControllerUser.dart';
+import 'package:logger/logger.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final AuthController? login;
+  const LoginScreen({super.key, this.login});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final email = TextEditingController();
-  final password = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   bool isVisible = false;
   bool isLoginTrue = false;
-  final formkey = GlobalKey<FormState>();
+
+  late final AuthController _login;
+  final Logger _logger = Logger();
+
+  @override
+  void initState() {
+    super.initState();
+    _login = widget.login ??
+        AuthController(); // Or provide your default RegisterService constructor
+  }
 
   Future<void> signIn() async {
-    if (formkey.currentState!.validate()) {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email.text.trim(),
-          password: password.text.trim(),
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    if (email.isEmpty || password.isEmpty) {
+      _logger.e("Email or password is empty");
+      return;
+    }
+
+    try {
+      final user = await _login.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        // Ambil data pengguna dari Firestore
+        final userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          _logger.i("Login successful");
+
+          // Navigasi ke dashboard atau layar lain yang diinginkan
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        } else {
+          _logger.w("User data not found in Firestore");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('User data not found. Please contact support.'),
+            ),
+          );
+        }
+      } else {
+        _logger.w("Login failed");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login failed. Please try again.'),
+          ),
         );
-        Navigator.pushReplacementNamed(context, '/dashboard');
-      } on FirebaseAuthException catch (e) {
-        setState(() {
-          isLoginTrue = true;
-        });
-        print(e.message);
       }
+    } catch (e) {
+      _logger.e("Error during sign in: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error during sign in: $e'),
+        ),
+      );
     }
   }
 
@@ -44,7 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Form(
-                  key: formkey,
                   child: Column(
                     children: [
                       Image.asset(
@@ -73,10 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 15),
-                      // email
+                      // Email
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -86,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                         child: TextFormField(
-                          controller: email,
+                          controller: emailController,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Email is required!!!";
@@ -106,7 +149,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Password
                       Container(
                         margin: const EdgeInsets.all(11),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 8),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
@@ -116,14 +160,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                         child: TextFormField(
-                          controller: password,
+                          controller: passwordController,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Password is required!!!";
                             }
                             return null;
                           },
-                          obscureText: isVisible,
+                          obscureText: !isVisible,
                           decoration: InputDecoration(
                             icon: Icon(
                               Icons.lock,
@@ -137,7 +181,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   isVisible = !isVisible;
                                 });
                               },
-                              icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(
+                                isVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
                               color: Color.fromRGBO(0, 137, 123, 10),
                             ),
                           ),
@@ -156,7 +204,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: signIn,
                           child: const Text(
                             'Sign In',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
