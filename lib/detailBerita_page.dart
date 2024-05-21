@@ -1,10 +1,60 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DetailBeritaPage extends StatelessWidget {
-  const DetailBeritaPage({super.key});
+class DetailBeritaPage extends StatefulWidget {
+  final DocumentSnapshot? berita;
+  final String? docId;
 
-  static const String logoImage = 'assets/logo.png';
-  static const String backgroundImage = 'assets/images.jpeg';
+  const DetailBeritaPage({Key? key, this.berita, this.docId}) : super(key: key);
+
+  @override
+  _DetailBeritaPageState createState() => _DetailBeritaPageState();
+}
+
+class _DetailBeritaPageState extends State<DetailBeritaPage> {
+  final CollectionReference _beritaCollection = FirebaseFirestore.instance.collection('berita');
+  Map<String, dynamic>? _data;
+  List<DocumentSnapshot>? _beritaLainnya;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.berita != null) {
+      setState(() {
+        _data = widget.berita!.data() as Map<String, dynamic>?;
+      });
+    } else if (widget.docId != null) {
+      _fetchDataById(widget.docId!);
+    }
+    _fetchBeritaLainnya();
+  }
+
+  void _fetchDataById(String docId) async {
+    DocumentSnapshot doc = await _beritaCollection.doc(docId).get();
+    setState(() {
+      _data = doc.data() as Map<String, dynamic>?;
+    });
+  }
+
+  void _fetchBeritaLainnya() async {
+    QuerySnapshot querySnapshot = await _beritaCollection.get();
+    setState(() {
+      _beritaLainnya = querySnapshot.docs.toList(); 
+    });
+  }
+
+  Widget _buildImage(String imageData) {
+    if (imageData.startsWith('data:image')) {
+      // Handle base64 image
+      final UriData data = Uri.parse(imageData).data!;
+      Uint8List bytes = data.contentAsBytes();
+      return Image.memory(bytes, fit: BoxFit.cover);
+    } else {
+      // Handle network image
+      return Image.network(imageData, fit: BoxFit.cover);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,125 +67,115 @@ class DetailBeritaPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Image.asset(
-                'assets/logo.png', 
+                'assets/logo.png',
                 height: 150,
               ),
             ),
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Container(
-              height: 241,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images.jpeg'), 
-                  fit: BoxFit.cover, 
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      body: _data == null
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Stack(
                 children: [
-                  SizedBox(height: 250),
-                  Text(
-                    'DKI Jakarta & Jawa Barat Berpotensi Hujan dan Angin Kencang',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    height: 241,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(_data!['img']),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Kompas',
-                    style: TextStyle(
-                      color: Color(0xFF00897B),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 250),
+                        Text(
+                          _data!['judul'],
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _data!['sumber'],
+                          style: const TextStyle(
+                            color: Color(0xFF00897B),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _data!['isi'],
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Berita Lainnya',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _beritaLainnya == null
+                            ? Center(child: CircularProgressIndicator())
+                            : SizedBox(
+                                height: 200,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _beritaLainnya!.length,
+                                  itemBuilder: (context, index) {
+                                    var berita = _beritaLainnya![index].data() as Map<String, dynamic>;
+                                    String docId = _beritaLainnya![index].id;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => DetailBeritaPage(
+                                              berita: _beritaLainnya![index],
+                                              docId: docId,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Card(
+                                        child: SizedBox(
+                                          width: 150,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              _buildImage(berita['img']),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                berita['judul'],
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                        const SizedBox(height: 250),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    'JAKARTA - KOMPAS Badan Meteorologi, Klimatologi, dan Geofisika memprakirakan DKI Jakarta dan sekitarnya akan mengalami hujan disertai petir dan angin kencang pada Minggu (5/1/2020). Untuk wilayah Jakarta Utara dan Jakarta Pusat, potensi itu akan berlangsung pada pagi hari. Jakarta Selatan serta Jakarta Timur pada sore hari.',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Kepala Bagian Hubungan Masyarakat Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) Akhmad Taufan Maulana, saat dihubungi di Jakarta, menuturkan, pada Minggu pagi, daerah Jakarta Pusat, Jakarta Selatan, dan Jakarta Barat akan berawan dan hujan ringan. Sementara pada siang hari, hujan diprakirakan terjadi merata di seluruh wilayah DKI Jakarta, termasuk Kepulauan Seribu.',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Untuk malam hari, wilayah DKI hanya berawan. ”Sebagai peringatan dini, waspada potensi hujan disertai kilat ataupun petir dan angin kencang di wilayah Jakarta Utara dan Jakarta Pusat pada pagi hari, dan Jakarta Selatan, serta Jakarta Timur pada sore hari,” katanya.',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    '\n Berita Lainnya',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 250),
                 ],
               ),
             ),
-          Positioned(
-              left: 0,
-              right: 0,
-              bottom: 50,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => DetailBeritaPage()),
-                        );
-                      },
-                        child: Card(
-                          child: SizedBox(
-                            width: 150,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images.jpeg'
-                                ),
-                                Text(
-                                  'Card ${index + 1}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

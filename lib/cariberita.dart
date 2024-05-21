@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'detailberita_page.dart'; // Import your DetailBeritaPage
+
 class cariberita extends StatefulWidget {
   const cariberita({super.key});
 
@@ -31,7 +33,8 @@ class _cariberitaState extends State<cariberita> {
 
   void _onScroll() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent && !_isLoading) {
+            _scrollController.position.maxScrollExtent &&
+        !_isLoading) {
       setState(() {
         _isLoading = true;
       });
@@ -47,7 +50,8 @@ class _cariberitaState extends State<cariberita> {
   }
 
   Future<void> _fetchData() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('berita').get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('berita').get();
     setState(() {
       berita = querySnapshot.docs;
     });
@@ -81,22 +85,41 @@ class _cariberitaState extends State<cariberita> {
                   var doc = berita[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
-                    child: Card(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(doc['img'], height: 190, width: 349, fit: BoxFit.contain),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16, top: 11),
-                            child: Text(doc['judul'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),                           
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailBeritaPage(
+                              berita: doc,
+                              docId: doc.id,
+                            ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16, bottom: 10),
-                            child: Text(doc['sumber'],
-                                style: TextStyle(fontSize: 12)),
-                          ),
-                        ],
+                        );
+                      },
+                      child: Card(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.network(doc['img'],
+                                height: 190,
+                                width: 349,
+                                fit: BoxFit.contain),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16, top: 11),
+                              child: Text(doc['judul'],
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16, bottom: 10),
+                              child: Text(doc['sumber'],
+                                  style: TextStyle(fontSize: 12)),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
