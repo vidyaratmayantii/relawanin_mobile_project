@@ -89,18 +89,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
-      await DatabaseHelper().saveProfilePic(pickedFile.path);
+  if (pickedFile != null) {
+    File imageFile = File(pickedFile.path);
+    await DatabaseHelper().saveProfilePic(pickedFile.path);
 
-      setState(() {
-        _profilePic = imageFile;
-      });
-    }
+    setState(() {
+      _profilePic = imageFile;
+    });
   }
+}
+
 
   Future<void> _loadProfilePic() async {
     String? profilePicPath = await DatabaseHelper().getProfilePic();
@@ -119,22 +120,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
-            flexibleSpace: Center(
-              child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      _profilePic == null
-                          ? Text('No profile picture')
-                          : Image.file(_profilePic!),
-                      SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _pickImage,
-                        child: Text('Pick Image'),
-                      ),
-                    ],
-                  )),
-            ),
           ),
         ),
         body: SingleChildScrollView(
@@ -142,24 +127,41 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: AssetImage(ProfilePage.profilePic),
-                  ),
-                ),
+              
+              ClipOval(
+              child: Container(
                 width: 100,
                 height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: _profilePic == null
+                      ? DecorationImage(
+                          image: AssetImage('assets/default_profile_pic.png'), 
+                          fit: BoxFit.cover,
+                        )
+                      : DecorationImage(
+                          image: FileImage(_profilePic!),
+                          fit: BoxFit.cover,
+                        ),
+                ),
               ),
+            ),
               SizedBox(height: 16),
-              Text(
-                'Ubah Foto',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF00897B),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              ElevatedButton(
+                onPressed: _pickImage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF00897B), 
+                  padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5), 
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4), 
+                  ),
+                ),
+                child: const Text(
+                  'Ubah Foto',
+                  style: TextStyle(
+                    fontSize: 14, // Set a smaller font size
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 24),
@@ -453,7 +455,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(

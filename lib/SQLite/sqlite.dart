@@ -35,6 +35,8 @@ class DatabaseHelper {
     ''');
   }
 
+  
+
   Future<int> saveProfilePic(String path) async {
     var dbClient = await db;
     await dbClient!.delete('UserProfile');
