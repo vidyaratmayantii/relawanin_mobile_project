@@ -114,11 +114,11 @@ class ProfilePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditProfilPage(userId: userId)),
+                          builder: (context) => EditProfilePage()),
                     );
                   },
                 ),
-          
+
                 ListTile(
                   leading: Icon(Icons.history),
                   title: Text('Riwayat'),

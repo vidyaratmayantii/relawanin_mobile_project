@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:relawanin_mobile_project/JsonModels/relawan.dart';
+import 'package:relawanin_mobile_project/Models/relawan.dart';
 
 class DatabaseHelper {
   final String databaseName = "RelawanIn.db";
