@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class cariberita extends StatefulWidget {
   const cariberita({super.key});
@@ -10,32 +11,46 @@ class cariberita extends StatefulWidget {
 class _cariberitaState extends State<cariberita> {
   int itemCount = 8;
   bool _isLoading = false;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+
+  List<DocumentSnapshot> berita = [];
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _fetchData();
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoading) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent && !_isLoading) {
       setState(() {
         _isLoading = true;
       });
       Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          itemCount += 8;
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            itemCount += 8;
+            _isLoading = false;
+          });
+        }
       });
     }
+  }
+
+  Future<void> _fetchData() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('berita').get();
+    setState(() {
+      berita = querySnapshot.docs;
+    });
   }
 
   @override
@@ -43,11 +58,12 @@ class _cariberitaState extends State<cariberita> {
     return Scaffold(
       body: Column(
         children: [
-        
           Padding(
             padding: const EdgeInsets.only(top: 13),
-            child: Text("Teratas saat ini",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
+            child: Text(
+              "Teratas saat ini",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+            ),
           ),
           Expanded(
             child: RefreshIndicator(
@@ -59,6 +75,10 @@ class _cariberitaState extends State<cariberita> {
                   if (index == itemCount && _isLoading) {
                     return Center(child: CircularProgressIndicator());
                   }
+                  if (index >= berita.length) {
+                    return Container(); // Prevent out of range error
+                  }
+                  var doc = berita[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Card(
@@ -66,33 +86,36 @@ class _cariberitaState extends State<cariberita> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('path/to/your/image', height: 190, width: 349, fit: BoxFit.contain),
+                          Image.network(doc['img'], height: 190, width: 349, fit: BoxFit.contain),
                           Padding(
                             padding: const EdgeInsets.only(left: 16, top: 11),
-                            child: Text("Judul Berita", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                          )
-                          
-                          
+                            child: Text(doc['judul'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),                           
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16, bottom: 10),
+                            child: Text(doc['sumber'],
+                                style: TextStyle(fontSize: 12)),
+                          ),
                         ],
                       ),
                     ),
                   );
                 },
               ),
-
             ),
           ),
         ],
       ),
-
-
     );
   }
 
   Future<void> _refresh() async {
     await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    setState(() {
-      itemCount += 5;
-    });
+    if (mounted) {
+      setState(() {
+        itemCount += 5;
+        _fetchData();
+      });
+    }
   }
 }
