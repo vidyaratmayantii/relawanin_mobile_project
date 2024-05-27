@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class carikegiatan extends StatefulWidget {
   const carikegiatan({super.key});
@@ -12,9 +13,12 @@ class _carikegiatanState extends State<carikegiatan> {
   bool _isLoading = false;
   ScrollController _scrollController = ScrollController();
 
+  List<DocumentSnapshot> activities = [];
+
   @override
   void initState() {
     super.initState();
+    _fetchData();
     _scrollController.addListener(_onScroll);
   }
 
@@ -25,17 +29,44 @@ class _carikegiatanState extends State<carikegiatan> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoading) {
-      setState(() {
-        _isLoading = true;
-      });
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          itemCount += 5;
-          _isLoading = false;
-        });
-      });
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoading) {
+      _loadMoreData();
     }
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('activities').get();
+    setState(() {
+      activities = querySnapshot.docs;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _loadMoreData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    // Simulate network delay
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      itemCount += 5;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _refresh() async {
+    setState(() {
+      _isLoading = true;
+    });
+    // Simulate network delay
+    await Future.delayed(Duration(seconds: 1));
+    // Re-fetch the data
+    await _fetchData();
   }
 
   @override
@@ -43,34 +74,17 @@ class _carikegiatanState extends State<carikegiatan> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text("Filter", style: TextStyle(color: Colors.grey, fontSize: 20))
-            ],
-          ),
-          TextFormField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              hintText: "Cari",
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 13),
-            child: Text("Teratas saat ini",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
-          ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: _refresh,
               child: ListView.builder(
                 controller: _scrollController,
-                itemCount: itemCount + (_isLoading ? 1 : 0),
+                itemCount: activities.length < itemCount ? activities.length : itemCount,
                 itemBuilder: (context, index) {
-                  if (index == itemCount && _isLoading) {
+                  if (index >= activities.length) {
                     return Center(child: CircularProgressIndicator());
                   }
+                  var doc = activities[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: Card(
@@ -78,21 +92,27 @@ class _carikegiatanState extends State<carikegiatan> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/DetailGambar.png', height: 190, width: 349, fit: BoxFit.contain),
+                          Image.network(doc['imageUrl'],
+                              height: 190, width: 349, fit: BoxFit.contain),
                           Padding(
                             padding: const EdgeInsets.only(left: 16, top: 11),
-                            child: Text("Judul Kegiatan", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                            child: Text(doc['namaKegiatan'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 20)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 16),
-                            child: Text("Nama komunitas", style: TextStyle(fontSize: 12)),
+                            child: Text(doc['aktivitasKegiatan'],
+                                style: TextStyle(fontSize: 12)),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 13, left: 13),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_month_outlined, color: Color.fromRGBO(0, 137, 123, 1)),
-                                Text("Tanggal kegiatan", style: TextStyle(fontSize: 12)),
+                                Icon(Icons.calendar_month_outlined,
+                                    color: Color.fromRGBO(0, 137, 123, 1)),
+                                Text(doc['tanggalKegiatan'],
+                                    style: TextStyle(fontSize: 12)),
                               ],
                             ),
                           ),
@@ -100,8 +120,10 @@ class _carikegiatanState extends State<carikegiatan> {
                             padding: const EdgeInsets.only(bottom: 9, left: 13),
                             child: Row(
                               children: [
-                                Icon(Icons.pin_drop_rounded, color: Color.fromRGBO(0, 137, 123, 1)),
-                                Text("Lokasi Kegiatan", style: TextStyle(fontSize: 12)),
+                                Icon(Icons.pin_drop_rounded,
+                                    color: Color.fromRGBO(0, 137, 123, 1)),
+                                Text(doc['lokasi'],
+                                    style: TextStyle(fontSize: 12)),
                               ],
                             ),
                           )
@@ -113,15 +135,9 @@ class _carikegiatanState extends State<carikegiatan> {
               ),
             ),
           ),
+          if (_isLoading) Center(child: CircularProgressIndicator()),
         ],
       ),
     );
-  }
-
-  Future<void> _refresh() async {
-    await Future.delayed(Duration(seconds: 1)); // Simulate network delay
-    setState(() {
-      itemCount += 5;
-    });
   }
 }
