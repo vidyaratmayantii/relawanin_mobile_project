@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/Komunitas/dashboard_komunitas.dart';
+import 'package:relawanin_mobile_project/Komunitas/editProfileKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/riwayatKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/tentangkamiKomunitas_page.dart';
 import 'package:relawanin_mobile_project/form_komunitas.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
-import 'package:relawanin_mobile_project/editProfile_page.dart';
 import 'package:relawanin_mobile_project/riwayat_page.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
@@ -11,8 +15,8 @@ import 'package:relawanin_mobile_project/AuthenticatorKomunitas/signUpKomunitas.
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+class ProfilePageKomunitas extends StatelessWidget {
+  const ProfilePageKomunitas({super.key});
 
   static const String profilePic = 'assets/profile_picture.png';
 
@@ -110,7 +114,7 @@ class ProfilePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditProfilePage()),
+                          builder: (context) => EditProfilePageKomunitas()),
                     );
                   },
                 ),
@@ -122,7 +126,8 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Riwayat()),
+                      MaterialPageRoute(
+                          builder: (context) => RiwayatKomunitas()),
                     );
                   },
                 ),
@@ -134,19 +139,8 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TentangKami()),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.group),
-                  title: Text('Bergabung Menjadi Komunitas'),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    Navigator.push(
-                      context,
                       MaterialPageRoute(
-                          builder: (context) => RegistrationForm()),
+                          builder: (context) => TentangKamiKomunitas()),
                     );
                   },
                 ),
@@ -195,22 +189,24 @@ class ProfilePage extends StatelessWidget {
               // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
+                MaterialPageRoute(builder: (context) => ProfilePageKomunitas()),
               );
             } else if (index == 0) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardPage()),
+                MaterialPageRoute(builder: (context) => DashboardKomunitas()),
               );
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => pageSearch()),
+                MaterialPageRoute(
+                    builder: (context) => NotificationPageKomunitas()),
               );
             } else if (index == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
+                MaterialPageRoute(
+                    builder: (context) => NotificationPageKomunitas()),
               );
             }
           },

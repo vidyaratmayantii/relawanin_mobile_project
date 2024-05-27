@@ -8,7 +8,7 @@ import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
 import 'package:relawanin_mobile_project/AuthenticatorKomunitas/signUpKomunitas.dart';
 import 'dashboard_page.dart';
-import 'dashboard_komunitas.dart';
+import 'Komunitas/dashboard_komunitas.dart';
 import 'cari_kegiatan_page.dart';
 import 'form.dart';
 import 'detailBerita_page.dart';
