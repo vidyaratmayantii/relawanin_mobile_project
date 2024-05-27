@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Komunitas/dashboard_komunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/editProfileKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/riwayatKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/tentangkamiKomunitas_page.dart';
 import 'package:relawanin_mobile_project/form_komunitas.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
@@ -100,12 +103,6 @@ class ProfilePageKomunitas extends StatelessWidget {
                 SizedBox(height: 16),
                 Divider(),
                 ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Pengaturan'),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {},
-                ),
-                ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('Edit Profil'),
                   trailing: Icon(Icons.chevron_right),
@@ -129,17 +126,10 @@ class ProfilePageKomunitas extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Riwayat()),
+                      MaterialPageRoute(
+                          builder: (context) => RiwayatKomunitas()),
                     );
                   },
-                ),
-                ListTile(
-                  leading: Icon(Icons.dark_mode),
-                  title: Text('Mode Gelap'),
-                  trailing: Switch(
-                    value: false,
-                    onChanged: (value) {},
-                  ),
                 ),
                 Divider(),
                 ListTile(
@@ -149,7 +139,8 @@ class ProfilePageKomunitas extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TentangKami()),
+                      MaterialPageRoute(
+                          builder: (context) => TentangKamiKomunitas()),
                     );
                   },
                 ),
@@ -208,12 +199,14 @@ class ProfilePageKomunitas extends StatelessWidget {
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => pageSearch()),
+                MaterialPageRoute(
+                    builder: (context) => NotificationPageKomunitas()),
               );
             } else if (index == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
+                MaterialPageRoute(
+                    builder: (context) => NotificationPageKomunitas()),
               );
             }
           },

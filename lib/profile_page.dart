@@ -99,12 +99,6 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height: 16),
                 Divider(),
                 ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Pengaturan'),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {},
-                ),
-                ListTile(
                   leading: Icon(Icons.edit),
                   title: Text('Edit Profil'),
                   trailing: Icon(Icons.chevron_right),
@@ -132,14 +126,6 @@ class ProfilePage extends StatelessWidget {
                     );
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.dark_mode),
-                  title: Text('Mode Gelap'),
-                  trailing: Switch(
-                    value: false,
-                    onChanged: (value) {},
-                  ),
-                ),
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.info),
@@ -159,7 +145,8 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegistrationForm()),
+                      MaterialPageRoute(
+                          builder: (context) => RegistrationForm()),
                     );
                   },
                 ),
