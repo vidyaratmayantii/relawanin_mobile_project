@@ -13,6 +13,7 @@ class cariberita extends StatefulWidget {
 class _cariberitaState extends State<cariberita> {
   int itemCount = 8;
   bool _isLoading = false;
+  bool _isEmpty = false;
   final ScrollController _scrollController = ScrollController();
 
   List<DocumentSnapshot> berita = [];
@@ -54,6 +55,7 @@ class _cariberitaState extends State<cariberita> {
         await FirebaseFirestore.instance.collection('berita').get();
     setState(() {
       berita = querySnapshot.docs;
+      _isEmpty = berita.isEmpty;
     });
   }
 
@@ -72,59 +74,61 @@ class _cariberitaState extends State<cariberita> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: _refresh,
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: itemCount + (_isLoading ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == itemCount && _isLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (index >= berita.length) {
-                    return Container(); // Prevent out of range error
-                  }
-                  var doc = berita[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailBeritaPage(
-                              berita: doc,
-                              docId: doc.id,
+              child: _isEmpty
+                  ? Center(child: Text("Tidak ada berita yang tersedia"))
+                  : ListView.builder(
+                      controller: _scrollController,
+                      itemCount: itemCount + (_isLoading ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == itemCount && _isLoading) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (index >= berita.length) {
+                          return Container(); // Prevent out of range error
+                        }
+                        var doc = berita[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailBeritaPage(
+                                    berita: doc,
+                                    docId: doc.id,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.network(doc['img'],
+                                      height: 190,
+                                      width: 349,
+                                      fit: BoxFit.contain),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16, top: 11),
+                                    child: Text(doc['judul'],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20)),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16, bottom: 10),
+                                    child: Text(doc['sumber'],
+                                        style: TextStyle(fontSize: 12)),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
                       },
-                      child: Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.network(doc['img'],
-                                height: 190,
-                                width: 349,
-                                fit: BoxFit.contain),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16, top: 11),
-                              child: Text(doc['judul'],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16, bottom: 10),
-                              child: Text(doc['sumber'],
-                                  style: TextStyle(fontSize: 12)),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
-                  );
-                },
-              ),
             ),
           ),
         ],

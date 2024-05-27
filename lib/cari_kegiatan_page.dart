@@ -11,6 +11,7 @@ class carikegiatan extends StatefulWidget {
 class _carikegiatanState extends State<carikegiatan> {
   int itemCount = 5;
   bool _isLoading = false;
+  bool _isEmpty = false;
   ScrollController _scrollController = ScrollController();
 
   List<DocumentSnapshot> activities = [];
@@ -43,6 +44,7 @@ class _carikegiatanState extends State<carikegiatan> {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('activities').get();
     setState(() {
       activities = querySnapshot.docs;
+      _isEmpty = activities.isEmpty;
       _isLoading = false;
     });
   }
@@ -77,62 +79,64 @@ class _carikegiatanState extends State<carikegiatan> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: _refresh,
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: activities.length < itemCount ? activities.length : itemCount,
-                itemBuilder: (context, index) {
-                  if (index >= activities.length) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  var doc = activities[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Card(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(doc['imageUrl'],
-                              height: 190, width: 349, fit: BoxFit.contain),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16, top: 11),
-                            child: Text(doc['namaKegiatan'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16),
-                            child: Text(doc['aktivitasKegiatan'],
-                                style: TextStyle(fontSize: 12)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 13, left: 13),
-                            child: Row(
+              child: _isEmpty
+                  ? Center(child: Text("Tidak ada kegiatan tersedia"))
+                  : ListView.builder(
+                      controller: _scrollController,
+                      itemCount: activities.length < itemCount ? activities.length : itemCount,
+                      itemBuilder: (context, index) {
+                        if (index >= activities.length) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        var doc = activities[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Card(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.calendar_month_outlined,
-                                    color: Color.fromRGBO(0, 137, 123, 1)),
-                                Text(doc['tanggalKegiatan'],
-                                    style: TextStyle(fontSize: 12)),
+                                Image.network(doc['imageUrl'],
+                                    height: 190, width: 349, fit: BoxFit.contain),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16, top: 11),
+                                  child: Text(doc['namaKegiatan'],
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 20)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16),
+                                  child: Text(doc['aktivitasKegiatan'],
+                                      style: TextStyle(fontSize: 12)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 13, left: 13),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.calendar_month_outlined,
+                                          color: Color.fromRGBO(0, 137, 123, 1)),
+                                      Text(doc['tanggalKegiatan'],
+                                          style: TextStyle(fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 9, left: 13),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.pin_drop_rounded,
+                                          color: Color.fromRGBO(0, 137, 123, 1)),
+                                      Text(doc['lokasi'],
+                                          style: TextStyle(fontSize: 12)),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 9, left: 13),
-                            child: Row(
-                              children: [
-                                Icon(Icons.pin_drop_rounded,
-                                    color: Color.fromRGBO(0, 137, 123, 1)),
-                                Text(doc['lokasi'],
-                                    style: TextStyle(fontSize: 12)),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ),
           if (_isLoading) Center(child: CircularProgressIndicator()),
