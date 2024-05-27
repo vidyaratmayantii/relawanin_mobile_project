@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       activityData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>,
   ),
         '/pageSearch': (context) => pageSearch(),
-        '/kegiatan': (context) => const form(),
+        '/kegiatan': (context) => const MyApp(),
         '/profile': (context) => const ProfilePage(),
         '/berita': (context) => const DetailBeritaPage(),
         '/cariKegiatan': (context) => const carikegiatan(),

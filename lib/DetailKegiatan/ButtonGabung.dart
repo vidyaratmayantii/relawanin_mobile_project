@@ -20,7 +20,7 @@ class _MyButtonState extends State<ButtonGabung> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => form()),
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()),
         );
       },
       onTapDown: (_) => setState(() => isHovered = true),
