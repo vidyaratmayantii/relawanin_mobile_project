@@ -7,6 +7,8 @@ import 'package:relawanin_mobile_project/riwayat_page.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
+import 'package:relawanin_mobile_project/AuthenticatorKomunitas/signUpKomunitas.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -157,7 +159,7 @@ class ProfilePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => formKomunitas()),
+                      MaterialPageRoute(builder: (context) => RegistrationForm()),
                     );
                   },
                 ),
