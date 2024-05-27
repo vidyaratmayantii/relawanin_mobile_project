@@ -35,8 +35,8 @@ class UserModel {
       password: data['password'],
       noTelp: data['noTelp'],
       gender: data['Gender'],
-      tglLahir: data['Tanggal Lahir'] != null
-          ? DateTime.parse(data['Tanggal Lahir'])
+      tglLahir: data['tglLahir'] != null
+          ? DateTime.parse(data['tglLahir'])
           : null,
       pekerjaan: data['pekerjaan'],
       institusi: data['institusi'],
@@ -51,9 +51,9 @@ class UserModel {
       'email': email,
       'username': username,
       'password': password,
-      'noTelphone': noTelp,
+      'noTelp': noTelp,
       'gender': gender,
-      'tgl_lahir': tglLahir != null ? tglLahir!.toIso8601String() : null,
+      'tglTerbentuk': tglLahir != null ? tglLahir!.toIso8601String() : null,
       'pekerjaan': pekerjaan,
       'institusi': institusi,
       'provinsi': provinsi,

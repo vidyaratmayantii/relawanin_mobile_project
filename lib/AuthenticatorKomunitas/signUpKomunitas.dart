@@ -10,33 +10,9 @@ class RegistrationForm extends StatefulWidget {
 class _RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   final _controllerEmail = TextEditingController();
-  final _controllerFullname = TextEditingController();
-  final _controllerNoTelphone = TextEditingController();
   final _controllerPassword = TextEditingController();
-  final _controllerBidang = TextEditingController();
-  final _controllerProvinsi = TextEditingController();
-  final _controllerTglTerbentuk = TextEditingController();
   final _controllerUsername = TextEditingController();
 
-  DateTime? _selectedDate;
-
-  void _presentDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      if (pickedDate == null) {
-        return;
-      }
-      setState(() {
-        _selectedDate = pickedDate;
-        _controllerTglTerbentuk.text =
-            "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}";
-      });
-    });
-  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -68,12 +44,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         // Create user data in Firestore
         Map<String, dynamic> newMember = {
           'email': email,
-          'fullname': _controllerFullname.text,
-          'noTelphone': _controllerNoTelphone.text,
-          'password': _controllerPassword.text, // Note: Storing passwords in plaintext is not recommended.
-          'bidang': _controllerBidang.text,
-          'provinsi': _controllerProvinsi.text,
-          'tglTerbentuk': _controllerTglTerbentuk.text,
+          'password': _controllerPassword.text, 
           'username': username,
           'role': 'komunitas',
         };
@@ -148,44 +119,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: TextFormField(
-                  controller: _controllerFullname,
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your full name';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                  controller: _controllerNoTelphone,
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your phone number';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
                   controller: _controllerPassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -198,68 +131,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                  controller: _controllerBidang,
-                  decoration: InputDecoration(
-                    labelText: 'Community Field',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your community field';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                  controller: _controllerProvinsi,
-                  decoration: InputDecoration(
-                    labelText: 'Province',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your province';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                  controller: _controllerTglTerbentuk,
-                  decoration: InputDecoration(
-                    labelText: 'Date of Formation',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.calendar_today),
-                      onPressed: _presentDatePicker,
-                    ),
-                  ),
-                  readOnly: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the date of formation';
                     }
                     return null;
                   },

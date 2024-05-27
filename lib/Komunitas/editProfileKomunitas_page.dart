@@ -1,6 +1,7 @@
 // views/edit_profile_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/Controller/controllerKomunitas.dart';
 import 'package:relawanin_mobile_project/Controller/controllerUser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -8,25 +9,23 @@ import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 import 'package:relawanin_mobile_project/profile_page.dart';
 import 'package:intl/intl.dart';
 
-class EditProfilePage extends StatefulWidget {
+class EditProfilePageKomunitas extends StatefulWidget {
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  _EditProfilePageKomunitasState createState() =>
+      _EditProfilePageKomunitasState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
-  final UserController _userController = UserController();
-  Map<String, dynamic>? userData;
+class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
+  final komunitasController _komunitasController = komunitasController();
+  Map<String, dynamic>? komunitasData;
   File? _profilePic;
 
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController bidangController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController notelpController = TextEditingController();
-  final TextEditingController pekerjaanController = TextEditingController();
-  final TextEditingController institusiController = TextEditingController();
   final _dateController = TextEditingController();
-  String? gender;
   String? provinsi;
   bool isVisible = false;
 
@@ -47,42 +46,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    _getUserDataFromDatabase();
+    _getkomunitasDataFromDatabase();
     _loadProfilePic();
   }
 
-  void _getUserDataFromDatabase() async {
-    Map<String, dynamic>? data = await _userController.getUser();
+  void _getkomunitasDataFromDatabase() async {
+    Map<String, dynamic>? data = await _komunitasController.getUser();
     if (data != null) {
       setState(() {
-        userData = data;
-        usernameController.text = userData?['username'] ?? '';
-        nameController.text = userData?['fullname'] ?? '';
-        passwordController.text = userData?['password'] ?? '';
-        notelpController.text = userData?['noTelp'] ?? '';
-        pekerjaanController.text = userData?['pekerjaan'] ?? '';
-        institusiController.text = userData?['institusi'] ?? '';
-        _dateController.text = userData?['tglLahir'] ?? '';
-        gender = userData?['gender'];
-        provinsi = userData?['provinsi'];
+        komunitasData = data;
+        usernameController.text = komunitasData?['username'] ?? '';
+        bidangController.text = komunitasData?['bidang'] ?? '';
+        notelpController.text = komunitasData?['noTelp'] ?? '';
+        _dateController.text = komunitasData?['tglTerbentuk'] ?? '';
+        provinsi = komunitasData?['provinsi'];
       });
     }
   }
 
   // Function to save profile
   void saveProfile() async {
-    Map<String, dynamic> userData = {
-      'name': nameController.text,
+    Map<String, dynamic> komunitasData = {
+      'bidang': bidangController.text,
       'username': usernameController.text,
-      'password': passwordController.text,
       'noTelp': notelpController.text,
-      'gender': gender!,
-      'tglLahir': _dateController.text,
-      'pekerjaan': pekerjaanController.text,
-      'institusi': institusiController.text,
+      'tglTerbentuk': _dateController.text,
       'provinsi': provinsi!,
     };
-    await _userController.updateData(userData);
+    await _komunitasController.updateData(komunitasData);
   }
 
   void _pickImage() async {
@@ -214,7 +205,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
 
-              // Nama
+              // Bidang
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -227,10 +218,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     color: Colors.white),
                 child: TextFormField(
-                  controller: nameController,
+                  controller: bidangController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "Nama is required!!!";
+                      return "Bidang is required!!!";
                     }
                     return null;
                   },
@@ -240,7 +231,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'Nama',
+                    hintText: 'Bidang',
                   ),
                 ),
               ),
@@ -276,50 +267,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
 
-              // gender dropdown
-              Container(
-                margin: EdgeInsets.all(11),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Color.fromRGBO(0, 137, 123, 0.5),
-                    width: 2.0,
-                  ),
-                  color: Colors.white,
-                ),
-                child: DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    icon: Icon(
-                      Icons.person,
-                      color: Color.fromRGBO(0, 137, 123, 10),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                  hint: Text('Select Gender'),
-                  value: gender,
-                  items: ['Male', 'Female', 'Other'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      gender = newValue;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Gender is required!";
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // Tanggal Lahir input field
+              // Tanggal Terbentuk input field
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -338,7 +286,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   onTap: () => _selectDate(context),
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "Tanggal Lahir is required!!!";
+                      return "Tanggal Terbentuk is required!!!";
                     }
                     return null;
                   },
@@ -348,75 +296,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'Tanggal Lahir (yyyy/mm/dd)',
-                  ),
-                ),
-              ),
-
-              // No pekerjaan
-              Container(
-                margin: EdgeInsets.all(11),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Color.fromRGBO(0, 137, 123, 0.5),
-                      width: 2.0,
-                    ),
-                    color: Colors.white),
-                child: TextFormField(
-                  controller: pekerjaanController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "job is required!!!";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    icon: Icon(
-                      Icons.email,
-                      color: Color.fromRGBO(0, 137, 123, 10),
-                    ),
-                    border: InputBorder.none,
-                    hintText: 'pekerjaan',
-                  ),
-                ),
-              ),
-
-              // No institusi
-              Container(
-                margin: EdgeInsets.all(11),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Color.fromRGBO(0, 137, 123, 0.5),
-                      width: 2.0,
-                    ),
-                    color: Colors.white),
-                child: TextFormField(
-                  controller: institusiController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "institusi is required!!!";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    icon: Icon(
-                      Icons.email,
-                      color: Color.fromRGBO(0, 137, 123, 10),
-                    ),
-                    border: InputBorder.none,
-                    hintText: 'Institusi',
+                    hintText: 'Tanggal Terbentuk (yyyy/mm/dd)',
                   ),
                 ),
               ),
 
               // provinsi dropdown field
-              // gender dropdown
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -491,7 +376,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Gender is required!";
+                      return "Provinsi is required!";
                     }
                     return null;
                   },
@@ -499,6 +384,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
 
               SizedBox(height: 16),
+
               ElevatedButton(
                 onPressed: () {
                   saveProfile(); // Panggil metode untuk menyimpan perubahan ke database

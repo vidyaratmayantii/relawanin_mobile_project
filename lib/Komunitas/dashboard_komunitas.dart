@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
+import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/pageSearchKomunitas.dart';
+import 'package:relawanin_mobile_project/Komunitas/profileKomunitas_page.dart';
 import 'package:relawanin_mobile_project/detailBerita_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/editProfileKomunitas_page.dart';
 import 'package:relawanin_mobile_project/historyActivities.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
-import 'profile_page.dart';
-import 'formAktivitas.dart';
+import '../profile_page.dart';
+import '../formAktivitas.dart';
 
 class DashboardKomunitas extends StatelessWidget {
   const DashboardKomunitas({super.key});
@@ -69,9 +73,10 @@ class DashboardKomunitas extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                       Navigator.push(
+                        Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ActivityForm()),
+                          MaterialPageRoute(
+                              builder: (context) => ActivityForm()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -88,9 +93,10 @@ class DashboardKomunitas extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                       Navigator.push(
+                        Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => MyActivitiesList()),
+                          MaterialPageRoute(
+                              builder: (context) => MyActivitiesList()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -122,7 +128,9 @@ class DashboardKomunitas extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('activities').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('activities')
+                    .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator(); // Menampilkan indikator loading
@@ -144,30 +152,35 @@ class DashboardKomunitas extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DetailKegiatan(activityData: activity.data() as Map<String, dynamic>),
+                                    builder: (context) => DetailKegiatan(
+                                        activityData: activity.data()
+                                            as Map<String, dynamic>),
                                   ),
                                 );
                               },
-
                               child: Card(
                                 child: SizedBox(
                                   width: 150,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // Mengambil gambar dari Firebase Storage jika imageUrl tidak kosong
                                       if (activity['imageUrl'] != null)
                                         Image.network(
-                                          activity['imageUrl'], // URL gambar dari Firestore
+                                          activity[
+                                              'imageUrl'], // URL gambar dari Firestore
                                           width: 150,
                                           height: 125,
                                           fit: BoxFit.cover,
                                         ),
                                       // Menampilkan judul di sini
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, left: 8.0, right: 8.0),
                                         child: Text(
-                                          activity['namaKegiatan'], // Menggunakan data dari Firestore
+                                          activity[
+                                              'namaKegiatan'], // Menggunakan data dari Firestore
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -176,7 +189,8 @@ class DashboardKomunitas extends StatelessWidget {
                                       ),
                                       // Menampilkan nama lokasi
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           'Lokasi: ${activity['lokasi']}',
                                           style: TextStyle(
@@ -186,7 +200,8 @@ class DashboardKomunitas extends StatelessWidget {
                                       ),
                                       // Menampilkan tanggal kegiatan
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           'Tanggal: ${activity['tanggalKegiatan']}',
                                           style: TextStyle(
@@ -272,17 +287,17 @@ class DashboardKomunitas extends StatelessWidget {
             if (index == 3) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ProfilePage()),
+                MaterialPageRoute(builder: (context) => ProfilePageKomunitas()),
               );
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const pageSearch()),
+                MaterialPageRoute(builder: (context) => const pageSearchKomunitas()),
               );
-            } else if (index == 2 ) {
+            } else if (index == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationPage()),
+                MaterialPageRoute(builder: (context) => NotificationPageKomunitas()),
               );
             }
           },
