@@ -1,24 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Komunitas/dashboard_komunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/editProfileKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Komunitas/riwayatKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Komunitas/tentangkamiKomunitas_page.dart';
-import 'package:relawanin_mobile_project/form_komunitas.dart';
-import 'package:relawanin_mobile_project/pageSearch.dart';
-import 'package:relawanin_mobile_project/dashboard_page.dart';
-import 'package:relawanin_mobile_project/riwayat_page.dart';
-import 'package:relawanin_mobile_project/tentangkami_page.dart';
-import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
-import 'package:relawanin_mobile_project/AuthenticatorKomunitas/signUpKomunitas.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 
-class ProfilePageKomunitas extends StatelessWidget {
+class ProfilePageKomunitas extends StatefulWidget {
   const ProfilePageKomunitas({super.key});
 
-  static const String profilePic = 'assets/profile_picture.png';
+  @override
+  _ProfilePageKomunitasState createState() => _ProfilePageKomunitasState();
+}
+
+class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
+  File? _profilePic;
+  String displayName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+    _loadProfilePic();
+  }
+
+  Future<void> _loadProfilePic() async {
+    String? profilePicPath = await DatabaseHelper().getProfilePic();
+    if (profilePicPath != null) {
+      setState(() {
+        _profilePic = File(profilePicPath);
+      });
+    }
+  }
+
+  void _onProfilePicChanged() {
+    setState(() {
+      _loadProfilePic();
+    });
+  }
+
+  Future<void> fetchUserName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        displayName = userDoc['username'] ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +64,7 @@ class ProfilePageKomunitas extends StatelessWidget {
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
-            automaticallyImplyLeading: false, // Menyembunyikan tombol "back"
-
+            automaticallyImplyLeading: false,
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -51,28 +86,32 @@ class ProfilePageKomunitas extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(profilePic),
+                ClipOval(
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: _profilePic == null
+                          ? DecorationImage(
+                              image:
+                                  AssetImage('assets/default_profile_pic.png'),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              image: FileImage(_profilePic!),
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
-                  width: 100,
-                  height: 100,
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Fadel Alif',
+                  displayName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
-                Text(
-                  '18 tahun',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
-                ),
                 SizedBox(height: 16),
                 Container(
                   decoration: BoxDecoration(
@@ -107,18 +146,16 @@ class ProfilePageKomunitas extends StatelessWidget {
                   title: Text('Edit Profil'),
                   trailing: Icon(Icons.chevron_right),
                   onTap: () {
-                    // Dapatkan ID pengguna saat ini
-                    String userId = FirebaseAuth.instance.currentUser!.uid;
-
-                    // Navigasi ke halaman EditProfilPage dengan menyertakan userId
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EditProfilePageKomunitas()),
+                        builder: (context) => EditProfilePageKomunitas(
+                          onProfilePicChanged: _onProfilePicChanged,
+                        ),
+                      ),
                     );
                   },
                 ),
-
                 ListTile(
                   leading: Icon(Icons.history),
                   title: Text('Riwayat'),
@@ -156,24 +193,6 @@ class ProfilePageKomunitas extends StatelessWidget {
                     style: TextStyle(color: Colors.red), // warna teks
                   ),
                 )
-
-                // ListTile(
-                //   // Widget ListTile
-                //   contentPadding: EdgeInsets.symmetric(
-                //       horizontal: 16.0), // Menambahkan padding horizontal
-                //   trailing: Center(
-                //     child: ElevatedButton(
-                //       onPressed: () {},
-                //       child: Text(
-                //         'Keluar',
-                //         style: TextStyle(color: Colors.white),
-                //       ),
-                //       style: ElevatedButton.styleFrom(
-                //         backgroundColor: Color(0xFF00897B),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -184,9 +203,7 @@ class ProfilePageKomunitas extends StatelessWidget {
           unselectedItemColor: Colors.grey,
           selectedItemColor: Color(0xFF00897B),
           onTap: (int index) {
-            // Tambahkan kondisi untuk navigasi ke halaman profil
             if (index == 3) {
-              // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProfilePageKomunitas()),

@@ -16,8 +16,8 @@ import 'profile_page.dart';
 import 'form_komunitas.dart';
 
 Future<void> main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -38,16 +38,19 @@ class MyApp extends StatelessWidget {
         '/dashboard': (context) => const DashboardPage(),
         '/dashboardKomunitas': (context) => DashboardKomunitas(),
         '/detailKegiatan': (context) => DetailKegiatan(
-      activityData: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>,
-  ),
+              activityData: ModalRoute.of(context)!.settings.arguments
+                  as Map<String, dynamic>,
+            ),
         '/pageSearch': (context) => pageSearch(),
         '/kegiatan': (context) => const MyApp(),
         '/profile': (context) => const ProfilePage(),
         '/berita': (context) => const DetailBeritaPage(),
-        '/cariKegiatan': (context) => const carikegiatan(),
+        '/cariKegiatan': (context) => const carikegiatan(
+              searchQuery: '',
+            ),
         '/notification_page': (context) => NotificationPage(),
         '/form_komunitas': (context) => formKomunitas(),
-        '/register': (context) =>Register(),
+        '/register': (context) => Register(),
         '/registration_komunitas': (context) => RegistrationForm(),
       },
     );

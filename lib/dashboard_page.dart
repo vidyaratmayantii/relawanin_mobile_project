@@ -52,7 +52,7 @@ class DashboardPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Claim poin dengan \n menjadi aktivis!',
+                        'Ayo Cintai Bumi Dengan \n Mengikuti Aksi Cinta Bumi',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 24,
@@ -61,13 +61,13 @@ class DashboardPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Lanjutkan'),
-                      ),
+                      // ElevatedButton(
+                      //   onPressed: () {},
+                      //   child: const Text('Lanjutkan'),
+                      // ),
                       const SizedBox(height: 10),
                       const Text(
-                        'Dapatkan penawaran terbaik \n dengan menukarkan poin',
+                        'Ayo bergabung kedalam suatu komunitas untuk dapat \nmenjalakan aksi cinta bumi melalui aplikasi yang kembangkan',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,
@@ -79,70 +79,6 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Pilih Kategori yang kamu inginkan',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigasi ke halaman lain
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        minimumSize: const Size(100, 50),
-                      ),
-                      child: const Text(
-                        'Kegiatan',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        minimumSize: const Size(100, 50),
-                      ),
-                      child: const Text(
-                        'Webinar',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: buttonColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        minimumSize: const Size(100, 50),
-                      ),
-                      child: const Text(
-                        'Project',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -157,7 +93,9 @@ class DashboardPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('activities').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('activities')
+                    .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator(); // Menampilkan indikator loading
@@ -168,7 +106,7 @@ class DashboardPage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
-                        height: 200,
+                        height: 230,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: snapshot.data!.docs.length,
@@ -179,30 +117,35 @@ class DashboardPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DetailKegiatan(activityData: activity.data() as Map<String, dynamic>),
+                                    builder: (context) => DetailKegiatan(
+                                        activityData: activity.data()
+                                            as Map<String, dynamic>),
                                   ),
                                 );
                               },
-
                               child: Card(
                                 child: SizedBox(
                                   width: 150,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // Mengambil gambar dari Firebase Storage jika imageUrl tidak kosong
                                       if (activity['imageUrl'] != null)
                                         Image.network(
-                                          activity['imageUrl'], // URL gambar dari Firestore
+                                          activity[
+                                              'imageUrl'], // URL gambar dari Firestore
                                           width: 150,
                                           height: 125,
                                           fit: BoxFit.cover,
                                         ),
                                       // Menampilkan judul di sini
                                       Padding(
-                                        padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, left: 8.0, right: 8.0),
                                         child: Text(
-                                          activity['namaKegiatan'], // Menggunakan data dari Firestore
+                                          activity[
+                                              'namaKegiatan'], // Menggunakan data dari Firestore
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -211,7 +154,8 @@ class DashboardPage extends StatelessWidget {
                                       ),
                                       // Menampilkan nama lokasi
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           'Lokasi: ${activity['lokasi']}',
                                           style: TextStyle(
@@ -221,7 +165,8 @@ class DashboardPage extends StatelessWidget {
                                       ),
                                       // Menampilkan tanggal kegiatan
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
                                         child: Text(
                                           'Tanggal: ${activity['tanggalKegiatan']}',
                                           style: TextStyle(
@@ -254,47 +199,89 @@ class DashboardPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailBeritaPage(),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          child: SizedBox(
-                            width: 150,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Tambahkan gambar di sini
-                                Image.asset('assets/images.jpeg'),
-                                // Tambahkan judul di sini
-                                Text(
-                                  'Card ${index + 1}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+              StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection('berita').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // Menampilkan indikator loading
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // Menampilkan daftar kartu berdasarkan data yang diterima
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: SizedBox(
+                        height: 240,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            var doc = snapshot.data!.docs[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailBeritaPage(
+                                      berita: doc,
+                                      docId: doc.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                child: SizedBox(
+                                  width: 150,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Mengambil gambar dari Firebase Storage jika imageUrl tidak kosong
+                                      if (doc['img'] != null)
+                                        Image.network(
+                                          doc[
+                                              'img'], // URL gambar dari Firestore
+                                          width: 150,
+                                          height: 125,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      // Menampilkan judul di sini
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, left: 8.0, right: 8.0),
+                                        child: Text(
+                                          doc[
+                                              'judul'], // Menggunakan data dari Firestore
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      // Menampilkan nama lokasi
+                                      // Menampilkan tanggal kegiatan
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Oleh: ${doc['sumber']}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -315,7 +302,7 @@ class DashboardPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => const pageSearch()),
               );
-            } else if (index == 2 ) {
+            } else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NotificationPage()),

@@ -106,7 +106,7 @@ class DetailKegiatan extends StatelessWidget {
                       Icon(Icons.calendar_today, color: Colors.green),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(activityData['tanggalKegiatan'] ?? 'No Date'),
+                        child: Text('Tanggal Kegiatan: ${activityData['tanggalKegiatan'] ?? 'No Date'}'),
                       ),
                     ],
                   ),
@@ -115,7 +115,7 @@ class DetailKegiatan extends StatelessWidget {
                       Icon(Icons.map, color: Colors.green),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(activityData['lokasi'] ?? 'No Location'),
+                        child: Text('Lokasi: ${activityData['lokasi'] ?? 'No Location'}'),
                       ),
                     ],
                   ),
@@ -151,77 +151,18 @@ class DetailKegiatan extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
+            
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Galeri',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        MyCard(imagePath: 'assets/Dokter8.jpg'),
-                        MyCard(imagePath: 'assets/Dokter8.jpg'),
-                        MyCard(imagePath: 'assets/Dokter8.jpg'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Ulasan',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Icon(Icons.person, color: Colors.grey, size: 80),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Marsya (18 tahun)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              'Kegiatan yang sangat bermanfaat dan bagus untuk diikuti!',
-                              textAlign: TextAlign.justify,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 100,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 20),
                   ButtonGabung(
                     onTap: gabung,
                   ),
                   const SizedBox(height: 10),
-                  ButtonHubungi(
-                    onTap: hubungi,
-                  ),
+                  
                 ],
               ),
             ),

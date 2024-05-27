@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 import 'package:relawanin_mobile_project/form_komunitas.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
@@ -11,10 +16,49 @@ import 'package:relawanin_mobile_project/AuthenticatorKomunitas/signUpKomunitas.
 
 import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
-  static const String profilePic = 'assets/profile_picture.png';
+  // static const String profilePic = 'assets/profile_picture.png';
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String displayName = '';
+  File? _pickImage;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+    _loadProfilePic();
+  }
+
+  Future<void> _loadProfilePic() async {
+    String? profilePicPath = await DatabaseHelper()
+        .getProfilePic(); // Ambil path gambar dari database
+    if (profilePicPath != null) {
+      setState(() {
+        // Tampilkan gambar dari path
+        _pickImage = File(profilePicPath);
+      });
+    }
+  }
+
+  Future<void> fetchUserName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        displayName = userDoc['fullname'] ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,27 +91,30 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(profilePic),
+                ClipOval(
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: _pickImage == null
+                          ? DecorationImage(
+                              image:
+                                  AssetImage('assets/default_profile_pic.png'),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              image: FileImage(_pickImage!),
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
-                  width: 100,
-                  height: 100,
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Fadel Alif',
+                  displayName,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  '18 tahun',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 16),
                 Container(

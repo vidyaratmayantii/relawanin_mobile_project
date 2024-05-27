@@ -1,3 +1,4 @@
+import 'package:relawanin_mobile_project/Komunitas/cari_kegiatan_komunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/dashboard_komunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Komunitas/profileKomunitas_page.dart';
@@ -112,8 +113,8 @@ class _pageSearchKomunitasState extends State<pageSearchKomunitas> with SingleTi
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  carikegiatan(),
-                  cariberita(),
+                  CariKegiatanKomunitas(),
+                  cariberita(searchQuery: '',),
                 ],
               ),
             ),

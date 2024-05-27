@@ -3,30 +3,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 
-class carikegiatan extends StatefulWidget {
-  final String searchQuery;
-  const carikegiatan({super.key, required this.searchQuery});
+class CariKegiatanKomunitas extends StatefulWidget {
+  const CariKegiatanKomunitas({super.key});
 
   @override
-  State<carikegiatan> createState() => _carikegiatanState();
+  State<CariKegiatanKomunitas> createState() => _CariKegiatanKomunitasState();
 }
 
-class _carikegiatanState extends State<carikegiatan> {
+class _CariKegiatanKomunitasState extends State<CariKegiatanKomunitas> {
   int itemCount = 5;
   bool _isLoading = false;
   bool _isEmpty = false;
   ScrollController _scrollController = ScrollController();
-
   List<DocumentSnapshot> activities = [];
-  List<DocumentSnapshot> filteredActivities = [];
-
-  String displayName = '';
+  User? currentUser;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserName();
-    _fetchData();
+    _fetchCurrentUser();
     _scrollController.addListener(_onScroll);
   }
 
@@ -44,41 +39,29 @@ class _carikegiatanState extends State<carikegiatan> {
     }
   }
 
-  Future<void> _fetchUserName() async {
+  Future<void> _fetchCurrentUser() async {
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      setState(() {
-        displayName = userDoc['username'] ?? '';
-      });
-    }
+    setState(() {
+      currentUser = user;
+    });
+    _fetchData();
   }
 
   Future<void> _fetchData() async {
+    if (currentUser == null) return;
+
     setState(() {
       _isLoading = true;
     });
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('activities').get();
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('activities')
+        .where('userId', isEqualTo: currentUser!.uid)
+        .get();
+
     setState(() {
       activities = querySnapshot.docs;
-      _filterData();
       _isLoading = false;
-    });
-  }
-
-  void _filterData() {
-    List<DocumentSnapshot> _filtered = activities
-        .where((doc) => doc['namaKegiatan']
-            .toLowerCase()
-            .contains(widget.searchQuery.toLowerCase()))
-        .toList();
-    setState(() {
-      filteredActivities = _filtered;
-      _isEmpty = filteredActivities.isEmpty;
     });
   }
 
@@ -106,8 +89,6 @@ class _carikegiatanState extends State<carikegiatan> {
 
   @override
   Widget build(BuildContext context) {
-    _filterData(); // Call filter function whenever build method is called
-
     return Scaffold(
       body: Column(
         children: [
@@ -118,14 +99,14 @@ class _carikegiatanState extends State<carikegiatan> {
                   ? Center(child: Text("Tidak ada kegiatan tersedia"))
                   : ListView.builder(
                       controller: _scrollController,
-                      itemCount: filteredActivities.length < itemCount
-                          ? filteredActivities.length
+                      itemCount: activities.length < itemCount
+                          ? activities.length
                           : itemCount,
                       itemBuilder: (context, index) {
-                        if (index >= filteredActivities.length) {
+                        if (index >= activities.length) {
                           return Center(child: CircularProgressIndicator());
                         }
-                        var doc = filteredActivities[index];
+                        var doc = activities[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: GestureDetector(

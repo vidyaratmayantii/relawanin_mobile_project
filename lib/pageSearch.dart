@@ -1,7 +1,6 @@
 import 'package:relawanin_mobile_project/cariberita.dart';
 import 'package:relawanin_mobile_project/cari_kegiatan_page.dart';
 import 'package:flutter/material.dart';
-
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/profile_page.dart';
@@ -13,8 +12,10 @@ class pageSearch extends StatefulWidget {
   _pageSearchState createState() => _pageSearchState();
 }
 
-class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateMixin {
+class _pageSearchState extends State<pageSearch>
+    with SingleTickerProviderStateMixin {
   late TabController tabController;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -25,6 +26,7 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
   @override
   void dispose() {
     tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -36,6 +38,8 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false, // Menyembunyikan tombol "back"
+
           title: Text(
             'Search',
             style: TextStyle(
@@ -48,15 +52,14 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
           children: [
             SizedBox(height: 10),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),  // Add padding here
+              padding: EdgeInsets.symmetric(horizontal: 10), // Add padding here
               child: Container(
-                // height: 50,
                 width: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(0, 137, 123, 1),
-                  border: Border.all(width: 0, color: Color.fromRGBO(0, 137, 123, 1)),
-                  borderRadius: BorderRadius.circular(5)
-                ),
+                    color: Color.fromRGBO(0, 137, 123, 1),
+                    border: Border.all(
+                        width: 0, color: Color.fromRGBO(0, 137, 123, 1)),
+                    borderRadius: BorderRadius.circular(5)),
                 child: Column(
                   children: [
                     TabBar(
@@ -71,9 +74,7 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
                       ),
                       controller: tabController,
                       tabs: [
-                        Tab(
-                          text: 'Kegiatan' 
-                        ),
+                        Tab(text: 'Kegiatan'),
                         Tab(
                           text: 'Berita',
                         ),
@@ -85,7 +86,7 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
             ),
             SizedBox(height: 5),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),  // Add padding here
+              padding: EdgeInsets.symmetric(horizontal: 10), // Add padding here
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
@@ -100,10 +101,15 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
                   ],
                 ),
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Search...',
-                    icon: Icon(Icons.search, color: Color.fromRGBO(0, 137, 123, 1)),
+                    icon: Icon(Icons.search,
+                        color: Color.fromRGBO(0, 137, 123, 1)),
                   ),
                 ),
               ),
@@ -113,8 +119,8 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  carikegiatan(),
-                  cariberita(),
+                  carikegiatan(searchQuery: _searchController.text),
+                  cariberita(searchQuery: _searchController.text),
                 ],
               ),
             ),
@@ -136,7 +142,7 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
                 context,
                 MaterialPageRoute(builder: (context) => const DashboardPage()),
               );
-            } else if (index == 2){
+            } else if (index == 2) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => NotificationPage()),

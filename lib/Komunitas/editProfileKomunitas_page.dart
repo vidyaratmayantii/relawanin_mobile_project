@@ -14,6 +14,10 @@ import 'package:relawanin_mobile_project/profile_page.dart';
 import 'package:intl/intl.dart';
 
 class EditProfilePageKomunitas extends StatefulWidget {
+  final VoidCallback onProfilePicChanged;
+
+  EditProfilePageKomunitas({required this.onProfilePicChanged});
+
   @override
   _EditProfilePageKomunitasState createState() =>
       _EditProfilePageKomunitasState();
@@ -68,7 +72,6 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
     }
   }
 
-  // Function to save profile
   void saveProfile() async {
     Map<String, dynamic> komunitasData = {
       'bidang': bidangController.text,
@@ -91,6 +94,8 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
       setState(() {
         _profilePic = imageFile;
       });
+
+      widget.onProfilePicChanged();
     }
   }
 
@@ -437,7 +442,8 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
             } else if (index == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationPageKomunitas()),
+                MaterialPageRoute(
+                    builder: (context) => NotificationPageKomunitas()),
               );
             }
           },

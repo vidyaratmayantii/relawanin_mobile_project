@@ -59,8 +59,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Image.asset('assets/logoRelawanin.png'),
-          backgroundColor: Color.fromRGBO(0, 137, 123, 100),
+          title: Image.asset('assets/logo.png'),
+          backgroundColor:const Color(0xFF00897B),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -167,34 +167,7 @@ class _MyAppState extends State<MyApp> {
                     },
                   ),
                   SizedBox(height: 10), //jaraknya dengan yang atas
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start, // kiri button
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          selectPdf();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(0, 137, 123, 1),
-                        ),
-                        child: Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.center, //tulisan ditengah
-                          children: [
-                            Icon(
-                              Icons.add_circle,
-                              color: Colors.white,
-                            ),
-                            SizedBox(width: 8), // jarak antara icon dan teks
-                            Text(
-                              'Upload CV',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  
                   SizedBox(height: 40),
                   ElevatedButton(
                     onPressed: () {

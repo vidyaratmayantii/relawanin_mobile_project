@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/DetailKegiatan/DetailKegiatan.dart';
 import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
@@ -130,14 +131,20 @@ class DashboardKomunitas extends StatelessWidget {
               StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('activities')
+                    .where('userId',
+                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // Menampilkan indikator loading
+                    return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
-                    // Menampilkan daftar kartu berdasarkan data yang diterima
+                    if (snapshot.data!.docs.isEmpty) {
+                      return Center(
+                        child: Text('Belum ada kegiatan'),
+                      );
+                    }
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
@@ -234,46 +241,87 @@ class DashboardKomunitas extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SizedBox(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailBeritaPage()),
-                          );
-                        },
-                        child: Card(
-                          child: SizedBox(
-                            width: 150,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Tambahkan gambar di sini
-                                Image.asset('assets/images.jpeg'),
-                                // Tambahkan judul di sini
-                                Text(
-                                  'Card ${index + 1}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+              StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection('berita').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // Menampilkan indikator loading
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    // Menampilkan daftar kartu berdasarkan data yang diterima
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: SizedBox(
+                        height: 240,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            var doc = snapshot.data!.docs[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailBeritaPage(
+                                      berita: doc,
+                                      docId: doc.id,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                child: SizedBox(
+                                  width: 150,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Mengambil gambar dari Firebase Storage jika imageUrl tidak kosong
+                                      if (doc['img'] != null)
+                                        Image.network(
+                                          doc['img'], // URL gambar dari Firestore
+                                          width: 150,
+                                          height: 125,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      // Menampilkan judul di sini
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, left: 8.0, right: 8.0),
+                                        child: Text(
+                                          doc['judul'], // Menggunakan data dari Firestore
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      // Menampilkan nama lokasi
+                                      // Menampilkan tanggal kegiatan
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(
+                                          'Oleh: ${doc['sumber']}',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -292,12 +340,14 @@ class DashboardKomunitas extends StatelessWidget {
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const pageSearchKomunitas()),
+                MaterialPageRoute(
+                    builder: (context) => const pageSearchKomunitas()),
               );
             } else if (index == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NotificationPageKomunitas()),
+                MaterialPageRoute(
+                    builder: (context) => NotificationPageKomunitas()),
               );
             }
           },

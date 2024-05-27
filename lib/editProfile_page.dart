@@ -271,7 +271,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'phone number',
+                    hintText: 'Nomor Telepon',
                   ),
                 ),
               ),
@@ -297,7 +297,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     border: InputBorder.none,
                   ),
-                  hint: Text('Select Gender'),
+                  hint: Text('Pilih Gender'),
                   value: gender,
                   items: ['Male', 'Female', 'Other'].map((String value) {
                     return DropdownMenuItem<String>(
@@ -379,7 +379,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'pekerjaan',
+                    hintText: 'Pekerjaan',
                   ),
                 ),
               ),
@@ -437,7 +437,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     border: InputBorder.none,
                   ),
-                  hint: Text('Select provinsi'),
+                  hint: Text('Pilih provinsi'),
                   value: provinsi,
                   items: [
                     'Nanggroe Aceh Darussalam',
