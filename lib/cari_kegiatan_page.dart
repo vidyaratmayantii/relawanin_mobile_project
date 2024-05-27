@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class carikegiatan extends StatefulWidget {
-  const carikegiatan({super.key});
+  final String searchQuery;
+  const carikegiatan({super.key, required this.searchQuery});
 
   @override
   State<carikegiatan> createState() => _carikegiatanState();
@@ -15,6 +16,7 @@ class _carikegiatanState extends State<carikegiatan> {
   ScrollController _scrollController = ScrollController();
 
   List<DocumentSnapshot> activities = [];
+  List<DocumentSnapshot> filteredActivities = [];
 
   @override
   void initState() {
@@ -44,8 +46,20 @@ class _carikegiatanState extends State<carikegiatan> {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('activities').get();
     setState(() {
       activities = querySnapshot.docs;
-      _isEmpty = activities.isEmpty;
+      _filterData();
       _isLoading = false;
+    });
+  }
+
+  void _filterData() {
+    List<DocumentSnapshot> _filtered = activities
+        .where((doc) => doc['namaKegiatan']
+            .toLowerCase()
+            .contains(widget.searchQuery.toLowerCase()))
+        .toList();
+    setState(() {
+      filteredActivities = _filtered;
+      _isEmpty = filteredActivities.isEmpty;
     });
   }
 
@@ -73,6 +87,8 @@ class _carikegiatanState extends State<carikegiatan> {
 
   @override
   Widget build(BuildContext context) {
+    _filterData(); // Call filter function whenever build method is called
+
     return Scaffold(
       body: Column(
         children: [
@@ -83,12 +99,12 @@ class _carikegiatanState extends State<carikegiatan> {
                   ? Center(child: Text("Tidak ada kegiatan tersedia"))
                   : ListView.builder(
                       controller: _scrollController,
-                      itemCount: activities.length < itemCount ? activities.length : itemCount,
+                      itemCount: filteredActivities.length < itemCount ? filteredActivities.length : itemCount,
                       itemBuilder: (context, index) {
-                        if (index >= activities.length) {
+                        if (index >= filteredActivities.length) {
                           return Center(child: CircularProgressIndicator());
                         }
-                        var doc = activities[index];
+                        var doc = filteredActivities[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Card(

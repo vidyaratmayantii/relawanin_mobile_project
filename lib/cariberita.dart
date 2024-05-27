@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detailberita_page.dart'; // Import your DetailBeritaPage
 
 class cariberita extends StatefulWidget {
-  const cariberita({super.key});
+  final String searchQuery;
+  const cariberita({super.key, required this.searchQuery});
 
   @override
   State<cariberita> createState() => _cariberitaState();
@@ -17,6 +18,7 @@ class _cariberitaState extends State<cariberita> {
   final ScrollController _scrollController = ScrollController();
 
   List<DocumentSnapshot> berita = [];
+  List<DocumentSnapshot> filteredBerita = [];
 
   @override
   void initState() {
@@ -55,12 +57,27 @@ class _cariberitaState extends State<cariberita> {
         await FirebaseFirestore.instance.collection('berita').get();
     setState(() {
       berita = querySnapshot.docs;
-      _isEmpty = berita.isEmpty;
+      _filterData();
+      _isLoading = false;
+    });
+  }
+
+  void _filterData() {
+    List<DocumentSnapshot> _filtered = berita
+        .where((doc) => doc['judul']
+            .toLowerCase()
+            .contains(widget.searchQuery.toLowerCase()))
+        .toList();
+    setState(() {
+      filteredBerita = _filtered;
+      _isEmpty = filteredBerita.isEmpty;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    _filterData(); // Call filter function whenever build method is called
+
     return Scaffold(
       body: Column(
         children: [
@@ -83,10 +100,10 @@ class _cariberitaState extends State<cariberita> {
                         if (index == itemCount && _isLoading) {
                           return Center(child: CircularProgressIndicator());
                         }
-                        if (index >= berita.length) {
+                        if (index >= filteredBerita.length) {
                           return Container(); // Prevent out of range error
                         }
-                        var doc = berita[index];
+                        var doc = filteredBerita[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: GestureDetector(

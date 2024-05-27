@@ -14,6 +14,7 @@ class pageSearch extends StatefulWidget {
 
 class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateMixin {
   late TabController tabController;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,6 +25,7 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
   @override
   void dispose() {
     tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -49,7 +51,6 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),  // Add padding here
               child: Container(
-                // height: 50,
                 width: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
                   color: Color.fromRGBO(0, 137, 123, 1),
@@ -99,6 +100,10 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
                   ],
                 ),
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Search...',
@@ -112,8 +117,8 @@ class _pageSearchState extends State<pageSearch> with SingleTickerProviderStateM
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  carikegiatan(),
-                  cariberita(),
+                  carikegiatan(searchQuery: _searchController.text),
+                  cariberita(searchQuery: _searchController.text),
                 ],
               ),
             ),

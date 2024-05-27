@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         '/kegiatan': (context) => const form(),
         '/profile': (context) => const ProfilePage(),
         '/berita': (context) => const DetailBeritaPage(),
-        '/cariKegiatan': (context) => const carikegiatan(),
+        '/cariKegiatan': (context) => const carikegiatan(searchQuery: '',),
         '/notification_page': (context) => NotificationPage(),
         '/form_komunitas': (context) => formKomunitas(),
       },
