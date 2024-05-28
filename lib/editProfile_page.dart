@@ -1,5 +1,4 @@
-// views/edit_profile_page.dart
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Controller/controllerUser.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,6 +15,7 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   final UserController _userController = UserController();
   Map<String, dynamic>? userData;
+  String? _profilePicUrl;
   File? _profilePic;
 
   final TextEditingController usernameController = TextEditingController();
@@ -48,7 +48,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     _getUserDataFromDatabase();
-    _loadProfilePic();
   }
 
   void _getUserDataFromDatabase() async {
@@ -65,12 +64,56 @@ class _EditProfilePageState extends State<EditProfilePage> {
         _dateController.text = userData?['tglLahir'] ?? '';
         gender = userData?['gender'];
         provinsi = userData?['provinsi'];
+        _profilePicUrl = userData?['profilePic'];
       });
     }
   }
 
   // Function to save profile
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profilePic = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _profilePic = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadImageToFirebase(File imageFile) async {
+    try {
+      String uid = (await _userController.getLogInUser())?.uid ?? '';
+      if (uid.isNotEmpty) {
+        Reference ref =
+            FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
+        UploadTask uploadTask = ref.putFile(imageFile);
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        return downloadUrl;
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+    return null;
+  }
+
   void saveProfile() async {
+    String? uid = (await _userController.getLogInUser())?.uid;
+    String? imageUrl;
+    if (uid != null && _profilePic != null) {
+      imageUrl = await _uploadImageToFirebase(_profilePic!);
+    }
+
     Map<String, dynamic> userData = {
       'name': nameController.text,
       'username': usernameController.text,
@@ -81,31 +124,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       'pekerjaan': pekerjaanController.text,
       'institusi': institusiController.text,
       'provinsi': provinsi!,
+      if (imageUrl != null)
+        'profilePic': imageUrl, // Menyimpan URL foto profil jika ada
     };
     await _userController.updateData(userData);
-  }
-
-  void _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
-      await DatabaseHelper().saveProfilePic(pickedFile.path);
-
-      setState(() {
-        _profilePic = imageFile;
-      });
-    }
-  }
-
-  Future<void> _loadProfilePic() async {
-    String? profilePicPath = await DatabaseHelper().getProfilePic();
-    if (profilePicPath != null) {
-      setState(() {
-        _profilePic = File(profilePicPath);
-      });
-    }
   }
 
   @override
@@ -131,7 +153,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     shape: BoxShape.circle,
                     image: _profilePic == null
                         ? DecorationImage(
-                            image: AssetImage('assets/default_profile_pic.png'),
+                            image: _profilePic != null
+                                ? FileImage(_profilePic!)
+                                : (_profilePicUrl != null
+                                        ? NetworkImage(_profilePicUrl!)
+                                        : AssetImage(
+                                            'assets/default_profile_pic.png'))
+                                    as ImageProvider<Object>,
                             fit: BoxFit.cover,
                           )
                         : DecorationImage(
@@ -153,7 +181,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
                 child: const Text(
-                  'Ubah Foto',
+                  'Ubah Foto Melalui Galery',
+                  style: TextStyle(
+                    fontSize: 14, // Set a smaller font size
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: _takePicture,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF00897B),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: const Text(
+                  'Ubah Foto Melalui Kamera',
                   style: TextStyle(
                     fontSize: 14, // Set a smaller font size
                     color: Colors.white,

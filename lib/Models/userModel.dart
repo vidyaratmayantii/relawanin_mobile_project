@@ -12,6 +12,7 @@ class UserModel {
   final String? pekerjaan;
   final String? institusi;
   final String? provinsi;
+  final String profilePicUrl;
 
   UserModel({
     this.id,
@@ -25,6 +26,7 @@ class UserModel {
     this.pekerjaan,
     this.institusi,
     this.provinsi,
+    required this.profilePicUrl,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> data) {
@@ -41,6 +43,7 @@ class UserModel {
       pekerjaan: data['pekerjaan'],
       institusi: data['institusi'],
       provinsi: data['provinsi'],
+      profilePicUrl: data['profilePicUrl'],
     );
   }
 
@@ -57,6 +60,7 @@ class UserModel {
       'pekerjaan': pekerjaan,
       'institusi': institusi,
       'provinsi': provinsi,
+      'profilePicUrl': profilePicUrl,
     };
   }
 }

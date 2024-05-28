@@ -9,6 +9,7 @@ class Komunitasmodel {
   final DateTime? tglTerbentuk;
   final String? provinsi;
   final String? bidang;
+  final String profilePicUrl;
 
   Komunitasmodel(
       {this.id,
@@ -18,7 +19,8 @@ class Komunitasmodel {
       this.noTelp,
       this.tglTerbentuk,
       this.provinsi,
-      this.bidang});
+      this.bidang,
+      required this.profilePicUrl});
 
   factory Komunitasmodel.fromMap(Map<String, dynamic> komunitasData) {
     return Komunitasmodel(
@@ -31,6 +33,7 @@ class Komunitasmodel {
           ? DateTime.parse(komunitasData['tglTerbentuk'])
           : null,
       provinsi: komunitasData['provinsi'],
+      profilePicUrl: komunitasData['profilePicUrl'],
     );
   }
 
@@ -45,6 +48,7 @@ class Komunitasmodel {
       'tglTerbentuk':
           tglTerbentuk != null ? tglTerbentuk!.toIso8601String() : null,
       'provinsi': provinsi,
+      'profilePicUrl': profilePicUrl,
     };
   }
 }

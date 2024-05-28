@@ -13,7 +13,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
   final _controllerPassword = TextEditingController();
   final _controllerUsername = TextEditingController();
 
-
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final email = _controllerEmail.text.trim();
@@ -44,7 +43,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
         // Create user data in Firestore
         Map<String, dynamic> newMember = {
           'email': email,
-          'password': _controllerPassword.text, 
+          'password': _controllerPassword.text,
           'username': username,
           'role': 'komunitas',
         };
@@ -59,7 +58,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             .showSnackBar(SnackBar(content: Text('Registration Successful')));
 
         // Optionally, navigate to another page
-        Navigator.pushReplacementNamed(context, '/dashboard');
+        Navigator.pushReplacementNamed(context, '/');
       } on FirebaseAuthException catch (e) {
         _showErrorSnackBar(e.message ?? 'Registration failed');
       }

@@ -1,5 +1,6 @@
 // views/edit_profile_page.dart
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:relawanin_mobile_project/Controller/controllerKomunitas.dart';
 import 'package:relawanin_mobile_project/Controller/controllerUser.dart';
@@ -26,6 +27,7 @@ class EditProfilePageKomunitas extends StatefulWidget {
 class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
   final komunitasController _komunitasController = komunitasController();
   Map<String, dynamic>? komunitasData;
+  String? _profilePicUrl;
   File? _profilePic;
 
   final TextEditingController usernameController = TextEditingController();
@@ -55,7 +57,6 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
   void initState() {
     super.initState();
     _getkomunitasDataFromDatabase();
-    _loadProfilePic();
   }
 
   void _getkomunitasDataFromDatabase() async {
@@ -68,35 +69,64 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
         notelpController.text = komunitasData?['noTelp'] ?? '';
         _dateController.text = komunitasData?['tglTerbentuk'] ?? '';
         provinsi = komunitasData?['provinsi'];
+        _profilePicUrl = komunitasData?['profilePic'];
       });
     }
   }
 
   void saveProfile() async {
+    String? uid = (await _komunitasController.getLogInUser())?.uid;
+    String? imageUrl;
+    if (uid != null && _profilePic != null) {
+      imageUrl = await _uploadImageToFirebase(_profilePic!);
+    }
     Map<String, dynamic> komunitasData = {
       'bidang': bidangController.text,
       'username': usernameController.text,
       'noTelp': notelpController.text,
       'tglTerbentuk': _dateController.text,
       'provinsi': provinsi!,
+      if (imageUrl != null) 'profilePic': imageUrl,
     };
     await _komunitasController.updateData(komunitasData);
   }
 
-  void _pickImage() async {
+  // Function to save profile
+  Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
-      await DatabaseHelper().saveProfilePic(pickedFile.path);
-
       setState(() {
-        _profilePic = imageFile;
+        _profilePic = File(pickedFile.path);
       });
-
-      widget.onProfilePicChanged();
     }
+  }
+
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _profilePic = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<String?> _uploadImageToFirebase(File imageFile) async {
+    try {
+      String uid = (await _komunitasController.getLogInUser())?.uid ?? '';
+      if (uid.isNotEmpty) {
+        Reference ref =
+            FirebaseStorage.instance.ref().child('profilePics/$uid.jpg');
+        UploadTask uploadTask = ref.putFile(imageFile);
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        return downloadUrl;
+      }
+    } catch (e) {
+      print('Error uploading image: $e');
+    }
+    return null;
   }
 
   Future<void> _loadProfilePic() async {
@@ -131,7 +161,13 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
                     shape: BoxShape.circle,
                     image: _profilePic == null
                         ? DecorationImage(
-                            image: AssetImage('assets/default_profile_pic.png'),
+                            image: _profilePic != null
+                                ? FileImage(_profilePic!)
+                                : (_profilePicUrl != null
+                                        ? NetworkImage(_profilePicUrl!)
+                                        : AssetImage(
+                                            'assets/default_profile_pic.png'))
+                                    as ImageProvider<Object>,
                             fit: BoxFit.cover,
                           )
                         : DecorationImage(
@@ -154,6 +190,24 @@ class _EditProfilePageKomunitasState extends State<EditProfilePageKomunitas> {
                 ),
                 child: const Text(
                   'Ubah Foto',
+                  style: TextStyle(
+                    fontSize: 14, // Set a smaller font size
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: _takePicture,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF00897B),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                child: const Text(
+                  'Ubah Foto Melalui Kamera',
                   style: TextStyle(
                     fontSize: 14, // Set a smaller font size
                     color: Colors.white,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:relawanin_mobile_project/Controller/controllerUser.dart';
 import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
 import 'package:relawanin_mobile_project/form_komunitas.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
@@ -26,24 +27,26 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final UserController _userController = UserController();
+  String? profileImageUrl;
   String displayName = '';
-  File? _pickImage;
 
   @override
   void initState() {
     super.initState();
     fetchUserName();
-    _loadProfilePic();
+    loadProfileImage();
   }
 
-  Future<void> _loadProfilePic() async {
-    String? profilePicPath = await DatabaseHelper()
-        .getProfilePic(); // Ambil path gambar dari database
-    if (profilePicPath != null) {
-      setState(() {
-        // Tampilkan gambar dari path
-        _pickImage = File(profilePicPath);
-      });
+  Future<void> loadProfileImage() async {
+    User? user = await _userController.getLogInUser();
+    if (user != null) {
+      Map<String, dynamic>? userData = await _userController.getUser();
+      if (userData != null && userData.containsKey('profilePic')) {
+        setState(() {
+          profileImageUrl = userData['profilePic'];
+        });
+      }
     }
   }
 
@@ -97,14 +100,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: _pickImage == null
+                      image: profileImageUrl == null
                           ? DecorationImage(
                               image:
                                   AssetImage('assets/default_profile_pic.png'),
                               fit: BoxFit.cover,
                             )
                           : DecorationImage(
-                              image: FileImage(_pickImage!),
+                              image: NetworkImage(profileImageUrl!),
                               fit: BoxFit.cover,
                             ),
                     ),

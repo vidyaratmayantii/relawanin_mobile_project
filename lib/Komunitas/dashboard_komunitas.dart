@@ -189,7 +189,7 @@ class DashboardKomunitas extends StatelessWidget {
                                           activity[
                                               'namaKegiatan'], // Menggunakan data dari Firestore
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 10,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),

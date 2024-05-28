@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:relawanin_mobile_project/Controller/controllerKomunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/dashboard_komunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/editProfileKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Komunitas/notificationKomunitas_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/pageSearchKomunitas.dart';
 import 'package:relawanin_mobile_project/Komunitas/riwayatKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Komunitas/tentangkamiKomunitas_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
@@ -18,28 +20,32 @@ class ProfilePageKomunitas extends StatefulWidget {
 }
 
 class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
-  File? _profilePic;
+  final komunitasController _komunitasController = komunitasController();
+  String? profileImageUrl;
   String displayName = '';
 
   @override
   void initState() {
     super.initState();
     fetchUserName();
-    _loadProfilePic();
+    loadProfileImage();
   }
 
-  Future<void> _loadProfilePic() async {
-    String? profilePicPath = await DatabaseHelper().getProfilePic();
-    if (profilePicPath != null) {
-      setState(() {
-        _profilePic = File(profilePicPath);
-      });
+  Future<void> loadProfileImage() async {
+    User? user = await _komunitasController.getLogInUser();
+    if (user != null) {
+      Map<String, dynamic>? userData = await _komunitasController.getUser();
+      if (userData != null && userData.containsKey('profilePic')) {
+        setState(() {
+          profileImageUrl = userData['profilePic'];
+        });
+      }
     }
   }
 
   void _onProfilePicChanged() {
     setState(() {
-      _loadProfilePic();
+      loadProfileImage();
     });
   }
 
@@ -92,14 +98,14 @@ class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
                     height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: _profilePic == null
+                      image: profileImageUrl == null
                           ? DecorationImage(
                               image:
                                   AssetImage('assets/default_profile_pic.png'),
                               fit: BoxFit.cover,
                             )
                           : DecorationImage(
-                              image: FileImage(_profilePic!),
+                              image: NetworkImage(profileImageUrl!),
                               fit: BoxFit.cover,
                             ),
                     ),
@@ -156,18 +162,6 @@ class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
                     );
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.history),
-                  title: Text('Riwayat'),
-                  trailing: Icon(Icons.chevron_right),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RiwayatKomunitas()),
-                    );
-                  },
-                ),
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.info),
@@ -217,7 +211,7 @@ class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => NotificationPageKomunitas()),
+                    builder: (context) => pageSearchKomunitas()),
               );
             } else if (index == 2) {
               Navigator.push(
