@@ -56,8 +56,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         userData = data;
         usernameController.text = userData?['username'] ?? '';
-        nameController.text = userData?['fullname'] ?? '';
-        passwordController.text = userData?['password'] ?? '';
+        nameController.text = userData?['name'] ?? '';
+        emailController.text = userData?['email'] ?? '';
         notelpController.text = userData?['noTelp'] ?? '';
         pekerjaanController.text = userData?['pekerjaan'] ?? '';
         institusiController.text = userData?['institusi'] ?? '';
@@ -115,6 +115,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     Map<String, dynamic> userData = {
+      'email': emailController.text,
       'name': nameController.text,
       'username': usernameController.text,
       'password': passwordController.text,
@@ -170,48 +171,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _pickImage,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF00897B),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: _pickImage,
+                    icon: Icon(Icons.photo_library, color: Colors.white),
+                    label: Text(
+                      'Galeri',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF00897B),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Ubah Foto Melalui Galery',
-                  style: TextStyle(
-                    fontSize: 14, // Set a smaller font size
-                    color: Colors.white,
+                  SizedBox(width: 16),
+                  ElevatedButton.icon(
+                    onPressed: _takePicture,
+                    icon: Icon(Icons.camera_alt, color: Colors.white),
+                    label: Text(
+                      'Kamera',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF00897B),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: _takePicture,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF00897B),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                child: const Text(
-                  'Ubah Foto Melalui Kamera',
-                  style: TextStyle(
-                    fontSize: 14, // Set a smaller font size
-                    color: Colors.white,
-                  ),
-                ),
+                ],
               ),
               SizedBox(height: 24),
-
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, top: 5.0),
                 child: Text(
-                  'Information Account',
+                  'Informasi Akun',
                   style: TextStyle(
                     color: Colors.grey,
                   ),
@@ -234,7 +242,37 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   controller: usernameController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "username is required!!!";
+                      return "Username diperlukan!";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    icon: Icon(
+                      Icons.person,
+                      color: Color.fromRGBO(0, 137, 123, 10),
+                    ),
+                    border: InputBorder.none,
+                    hintText: 'Username',
+                  ),
+                ),
+              ),
+
+              Container(
+                margin: EdgeInsets.all(11),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Color.fromRGBO(0, 137, 123, 0.5),
+                      width: 2.0,
+                    ),
+                    color: Colors.white),
+                child: TextFormField(
+                  controller: emailController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Email diperlukan!";
                     }
                     return null;
                   },
@@ -244,11 +282,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'Username',
+                    hintText: 'Email',
                   ),
                 ),
               ),
-
               // Data diri
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, top: 5.0),
@@ -276,22 +313,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   controller: nameController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "Nama is required!!!";
+                      return "Nama diperlukan!";
                     }
                     return null;
                   },
                   decoration: const InputDecoration(
                     icon: Icon(
-                      Icons.email,
+                      Icons.person,
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'Nama',
+                    hintText: 'Nama Lengkap',
                   ),
                 ),
               ),
 
-              // No telp
+              // Email
+
+              // No Telepon
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -307,99 +346,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   controller: notelpController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "phone number is required!!!";
+                      return "No. Telepon diperlukan!";
                     }
                     return null;
                   },
                   decoration: const InputDecoration(
                     icon: Icon(
-                      Icons.email,
+                      Icons.phone,
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
-                    hintText: 'Nomor Telepon',
+                    hintText: 'No. Telepon',
                   ),
                 ),
               ),
 
-              // gender dropdown
-              Container(
-                margin: EdgeInsets.all(11),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Color.fromRGBO(0, 137, 123, 0.5),
-                    width: 2.0,
-                  ),
-                  color: Colors.white,
-                ),
-                child: DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    icon: Icon(
-                      Icons.person,
-                      color: Color.fromRGBO(0, 137, 123, 10),
-                    ),
-                    border: InputBorder.none,
-                  ),
-                  hint: Text('Pilih Gender'),
-                  value: gender,
-                  items: ['Male', 'Female', 'Other'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      gender = newValue;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Gender is required!";
-                    }
-                    return null;
-                  },
-                ),
-              ),
-
-              // Tanggal Lahir input field
-              Container(
-                margin: EdgeInsets.all(11),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: Color.fromRGBO(0, 137, 123, 0.5),
-                    width: 2.0,
-                  ),
-                  color: Colors.white,
-                ),
-                child: TextFormField(
-                  controller: _dateController,
-                  readOnly: true, // Prevents manual input
-                  onTap: () => _selectDate(context),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Tanggal Lahir is required!!!";
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    icon: Icon(
-                      Icons.calendar_today,
-                      color: Color.fromRGBO(0, 137, 123, 10),
-                    ),
-                    border: InputBorder.none,
-                    hintText: 'Tanggal Lahir (yyyy/mm/dd)',
-                  ),
-                ),
-              ),
-
-              // No pekerjaan
+              // Pekerjaan
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -415,13 +377,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   controller: pekerjaanController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "job is required!!!";
+                      return "Pekerjaan diperlukan!";
                     }
                     return null;
                   },
                   decoration: const InputDecoration(
                     icon: Icon(
-                      Icons.email,
+                      Icons.work,
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
@@ -430,7 +392,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
 
-              // No institusi
+              // Institusi
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -446,13 +408,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   controller: institusiController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "institusi is required!!!";
+                      return "Institusi diperlukan!";
                     }
                     return null;
                   },
                   decoration: const InputDecoration(
                     icon: Icon(
-                      Icons.email,
+                      Icons.business,
                       color: Color.fromRGBO(0, 137, 123, 10),
                     ),
                     border: InputBorder.none,
@@ -461,8 +423,41 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
 
-              // provinsi dropdown field
-              // gender dropdown
+              // Tanggal Lahir
+              Container(
+                margin: EdgeInsets.all(11),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Color.fromRGBO(0, 137, 123, 0.5),
+                      width: 2.0,
+                    ),
+                    color: Colors.white),
+                child: TextFormField(
+                  controller: _dateController,
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    _selectDate(context);
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Tanggal Lahir diperlukan!";
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    icon: Icon(
+                      Icons.calendar_today,
+                      color: Color.fromRGBO(0, 137, 123, 10),
+                    ),
+                    border: InputBorder.none,
+                    hintText: 'Tanggal Lahir',
+                  ),
+                ),
+              ),
+
               Container(
                 margin: EdgeInsets.all(11),
                 padding:
@@ -544,7 +539,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
 
-              SizedBox(height: 16),
+              SizedBox(height: 24),
+              // Tombol Simpan
               ElevatedButton(
                 onPressed: () {
                   saveProfile(); // Panggil metode untuk menyimpan perubahan ke database
@@ -563,7 +559,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

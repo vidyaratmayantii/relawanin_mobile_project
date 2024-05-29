@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +13,37 @@ import 'package:relawanin_mobile_project/tentangkami_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
 import 'package:relawanin_mobile_project/AuthenticatorKomunitas/signUpKomunitas.dart';
-
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'profile_page.dart';
+import 'pageSearch.dart';
+import 'dashboard_page.dart';
+import 'editProfile_page.dart';
+import 'riwayat_page.dart';
+import 'tentangkami_page.dart';
+import 'notification_page.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: FirebaseAuth.instance.currentUser == null
+          ? LoginScreen()
+          : ProfilePage(),
+    );
+  }
+}
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
-
-  // static const String profilePic = 'assets/profile_picture.png';
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -58,9 +81,18 @@ class _ProfilePageState extends State<ProfilePage> {
           .doc(user.uid)
           .get();
       setState(() {
-        displayName = userDoc['fullname'] ?? '';
+        displayName = userDoc['name'] ?? '';
       });
     }
+  }
+
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override
@@ -71,8 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
-            automaticallyImplyLeading: false, // Menyembunyikan tombol "back"
-
+            automaticallyImplyLeading: false,
             flexibleSpace: Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -153,10 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   title: Text('Edit Profil'),
                   trailing: Icon(Icons.chevron_right),
                   onTap: () {
-                    // Dapatkan ID pengguna saat ini
                     String userId = FirebaseAuth.instance.currentUser!.uid;
-
-                    // Navigasi ke halaman EditProfilPage dengan menyertakan userId
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -164,7 +192,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
                   },
                 ),
-
                 ListTile(
                   leading: Icon(Icons.history),
                   title: Text('Riwayat'),
@@ -201,35 +228,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
+                  onPressed: _logout,
                   child: const Text(
                     'Keluar',
-                    style: TextStyle(color: Colors.red), // warna teks
+                    style: TextStyle(color: Colors.red),
                   ),
                 )
-
-                // ListTile(
-                //   // Widget ListTile
-                //   contentPadding: EdgeInsets.symmetric(
-                //       horizontal: 16.0), // Menambahkan padding horizontal
-                //   trailing: Center(
-                //     child: ElevatedButton(
-                //       onPressed: () {},
-                //       child: Text(
-                //         'Keluar',
-                //         style: TextStyle(color: Colors.white),
-                //       ),
-                //       style: ElevatedButton.styleFrom(
-                //         backgroundColor: Color(0xFF00897B),
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -240,9 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
           unselectedItemColor: Colors.grey,
           selectedItemColor: Color(0xFF00897B),
           onTap: (int index) {
-            // Tambahkan kondisi untuk navigasi ke halaman profil
             if (index == 3) {
-              // Indeks 3 adalah indeks untuk tombol "Profile"
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => ProfilePage()),
