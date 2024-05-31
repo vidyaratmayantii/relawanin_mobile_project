@@ -4,9 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:relawanin_mobile_project/dashboard_page.dart';
+import 'package:relawanin_mobile_project/Komunitas/tableRelawan.dart';
 
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   MyApp({Key? key}) : super(key: key);
@@ -38,7 +42,7 @@ class _MyAppState extends State<MyApp> {
       File file = File(pick.files[0].path!);
 
       final downloadLink = await uploadPdf(fileName, file);
-  
+
       await _firebaseFirestore.collection('pdf').add({
         "nama": fileName,
         "url": downloadLink,
@@ -64,8 +68,8 @@ class _MyAppState extends State<MyApp> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-          physics:BouncingScrollPhysics() ,
-            child: Padding(
+          physics: BouncingScrollPhysics(),
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
@@ -136,7 +140,8 @@ class _MyAppState extends State<MyApp> {
                   TextFormField(
                     controller: alasanController,
                     decoration: InputDecoration(
-                        labelText: 'Mengapa Anda Tertarik dengan Aktivitas Ini?',
+                        labelText:
+                            'Mengapa Anda Tertarik dengan Aktivitas Ini?',
                         hintStyle: TextStyle(fontSize: 16),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0))),
@@ -196,53 +201,62 @@ class _MyAppState extends State<MyApp> {
                     ],
                   ),
                   SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardPage()),
-                  );
-                      CollectionReference collectionRef =
-                          FirebaseFirestore.instance.collection('form');
-                      collectionRef.add({
-                        'nama': namaController.text,
-                        'email': emailController.text,
-                        'noTlp': noTlpController.text,
-                        'umur': umurController.text,
-                        'pekerjaan': pekerjaanController.text,
-                        'alasan': alasanController.text,
-                        'pengalaman': pengalamanController.text,
-                      });
-                      if (_formKey.currentState?.validate() ?? false) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Formulir terkirim')),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromRGBO(0, 137, 123, 1),
-                      minimumSize: Size(30, 50), // Mengatur lebar tombol
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Kirim Formulir',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  Builder(
+                    builder: (BuildContext context) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            CollectionReference collectionRef =
+                                FirebaseFirestore.instance.collection('form');
+                            collectionRef.add({
+                              'nama': namaController.text,
+                              'email': emailController.text,
+                              'noTlp': noTlpController.text,
+                              'umur': umurController.text,
+                              'pekerjaan': pekerjaanController.text,
+                              'alasan': alasanController.text,
+                              'pengalaman': pengalamanController.text,
+                            }).then((value) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Data berhasil terkirim'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TableRelawan(),
+                                ),
+                              );
+                            });
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(0, 137, 123, 1),
+                          minimumSize: Size(30, 50),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Kirim Formulir',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
             ),
-          )
+          ),
         ),
       ),
     );
   }
 }
-
-
-
