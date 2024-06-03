@@ -139,6 +139,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
           preferredSize: const Size.fromHeight(60.0),
           child: AppBar(
             backgroundColor: const Color(0xFF00897B),
+            title: const Text('Edit Profil',
+                style: TextStyle(color: Colors.white)),
           ),
         ),
         body: SingleChildScrollView(

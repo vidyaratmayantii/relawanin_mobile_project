@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +7,7 @@ import 'package:relawanin_mobile_project/form_komunitas.dart';
 import 'package:relawanin_mobile_project/pageSearch.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
 import 'package:relawanin_mobile_project/editProfile_page.dart';
-import 'package:relawanin_mobile_project/riwayat_page.dart';
+import 'package:relawanin_mobile_project/favorite.dart';
 import 'package:relawanin_mobile_project/tentangkami_page.dart';
 import 'package:relawanin_mobile_project/notification_page.dart';
 import 'package:relawanin_mobile_project/Authenticator/login.dart';
@@ -21,7 +20,7 @@ import 'profile_page.dart';
 import 'pageSearch.dart';
 import 'dashboard_page.dart';
 import 'editProfile_page.dart';
-import 'riwayat_page.dart';
+import 'favorite.dart';
 import 'tentangkami_page.dart';
 import 'notification_page.dart';
 
@@ -193,13 +192,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.history),
-                  title: Text('Riwayat'),
+                  leading: Icon(Icons.favorite),
+                  title: Text('Favorit Saya'),
                   trailing: Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Riwayat()),
+                      MaterialPageRoute(builder: (context) => Favorite()),
                     );
                   },
                 ),

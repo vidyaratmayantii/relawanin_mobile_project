@@ -1,14 +1,80 @@
 import 'package:flutter/material.dart';
-
 import 'ButtonGabung.dart';
 import 'ButtonHubungi.dart';
 import 'MyCard.dart';
+import 'package:relawanin_mobile_project/SQLite/sqlite.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DetailKegiatan extends StatelessWidget {
+class DetailKegiatan extends StatefulWidget {
   static const String logoImage = 'assets/logo.png';
   final Map<String, dynamic> activityData;
 
   DetailKegiatan({Key? key, required this.activityData}) : super(key: key);
+
+  @override
+  _DetailKegiatanState createState() => _DetailKegiatanState();
+}
+
+class _DetailKegiatanState extends State<DetailKegiatan> {
+  late SharedPreferences _prefs;
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPrefs();
+  }
+
+  Future<void> _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    final id = widget.activityData['id'];
+    _isFavorite = _prefs.getBool('favorite_$id') ?? false;
+    setState(() {});
+  }
+
+  Future<void> _toggleFavorite() async {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+
+    final databaseHelper = DatabaseHelper();
+    final id = widget.activityData['id'];
+    if (_isFavorite) {
+      _showSnackBar('Kegiatan telah ditambahkan ke favorit');
+      final activity = {
+        'id': id,
+        'namaKegiatan': widget.activityData['namaKegiatan'],
+        'lokasi': widget.activityData['lokasi'],
+        'deskripsiKegiatan': widget.activityData['deskripsiKegiatan'],
+        'aktivitasKegiatan': widget.activityData['aktivitasKegiatan'],
+        'ketentuanKegiatan': widget.activityData['ketentuanKegiatan'],
+        'tanggalKegiatan': widget.activityData['tanggalKegiatan'],
+        'batasRegistrasi': widget.activityData['batasRegistrasi'],
+        'estimasiPoint': widget.activityData['estimasiPoint'],
+        'imageUrl': widget.activityData['imageUrl']
+      };
+      await databaseHelper.insertFavoriteActivity(activity);
+    } else {
+      _showSnackBar('Kegiatan telah dihapus dari favorit');
+      await databaseHelper.deleteFavoriteActivity(id);
+    }
+
+    if (_isFavorite) {
+      _prefs.setBool('favorite_$id', true);
+    } else {
+      _prefs.remove('favorite_$id');
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(message),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
   void gabung() {}
   void hubungi() {}
@@ -31,8 +97,20 @@ class DetailKegiatan extends StatelessWidget {
             centerTitle: true,
             title: Padding(
               padding: const EdgeInsets.only(top: 30.0),
-              child: Image.asset(logoImage),
+              child: Image.asset(DetailKegiatan.logoImage),
             ),
+            actions: [
+              GestureDetector(
+                onTap: _toggleFavorite,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Icon(
+                    _isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         body: ListView(
@@ -40,7 +118,8 @@ class DetailKegiatan extends StatelessWidget {
           children: [
             // Use a default image if activityData['imageUrl'] is null
             Image.network(
-              activityData['imageUrl'] ?? 'https://via.placeholder.com/150',
+              widget.activityData['imageUrl'] ??
+                  'https://via.placeholder.com/150',
               width: double.infinity,
               height: screenHeight * 0.4,
               fit: BoxFit.fill,
@@ -51,14 +130,14 @@ class DetailKegiatan extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    activityData['namaKegiatan'] ?? 'No Name',
+                    widget.activityData['namaKegiatan'] ?? 'No Name',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   Text(
-                    activityData['lokasi'] ?? 'No Location',
+                    widget.activityData['lokasi'] ?? 'No Location',
                     style: TextStyle(
                       fontSize: 20,
                       color: Color(0xFF00897B),
@@ -73,7 +152,8 @@ class DetailKegiatan extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    activityData['deskripsiKegiatan'] ?? 'No Description',
+                    widget.activityData['deskripsiKegiatan'] ??
+                        'No Description',
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 40),
@@ -85,7 +165,7 @@ class DetailKegiatan extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    activityData['aktivitasKegiatan'] ?? 'No Activity',
+                    widget.activityData['aktivitasKegiatan'] ?? 'No Activity',
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 40),
@@ -97,7 +177,7 @@ class DetailKegiatan extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    activityData['ketentuanKegiatan'] ?? 'No Activity',
+                    widget.activityData['ketentuanKegiatan'] ?? 'No Activity',
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 30),
@@ -106,7 +186,8 @@ class DetailKegiatan extends StatelessWidget {
                       Icon(Icons.calendar_today, color: Colors.green),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Tanggal Kegiatan: ${activityData['tanggalKegiatan'] ?? 'No Date'}'),
+                        child: Text(
+                            'Tanggal Kegiatan: ${widget.activityData['tanggalKegiatan'] ?? 'No Date'}'),
                       ),
                     ],
                   ),
@@ -115,7 +196,8 @@ class DetailKegiatan extends StatelessWidget {
                       Icon(Icons.map, color: Colors.green),
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text('Lokasi: ${activityData['lokasi'] ?? 'No Location'}'),
+                        child: Text(
+                            'Lokasi: ${widget.activityData['lokasi'] ?? 'No Location'}'),
                       ),
                     ],
                   ),
@@ -125,7 +207,7 @@ class DetailKegiatan extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(
-                          'Batas registrasi: ${activityData['batasRegistrasi'] ?? 'No Registration Limit'}',
+                          'Batas registrasi: ${widget.activityData['batasRegistrasi'] ?? 'No Registration Limit'}',
                           style: TextStyle(color: Colors.red),
                         ),
                       ),
@@ -146,12 +228,12 @@ class DetailKegiatan extends StatelessWidget {
                     child: Text('Estimated Poin'),
                   ),
                   SizedBox(width: 150),
-                  Text(activityData['estimasiPoint']?.toString() ?? 'No Points'),
+                  Text(widget.activityData['estimasiPoint']?.toString() ??
+                      'No Points'),
                 ],
               ),
             ),
             const SizedBox(height: 10),
-            
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: Column(
@@ -162,7 +244,6 @@ class DetailKegiatan extends StatelessWidget {
                     onTap: gabung,
                   ),
                   const SizedBox(height: 10),
-                  
                 ],
               ),
             ),
