@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:relawanin_mobile_project/editActivity.dart';
+import 'package:relawanin_mobile_project/Komunitas/tableRelawan.dart';
 
 import 'DetailKegiatan/DetailKegiatan.dart';
 
@@ -49,12 +50,7 @@ class MyActivitiesListView extends StatelessWidget {
               var activity = snapshot.data!.docs[index];
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailKegiatan(activityData: activity.data() as Map<String, dynamic>),
-                    ),
-                  );
+                  
                 },
                 child: Card(
                   child: ListTile(
@@ -62,14 +58,27 @@ class MyActivitiesListView extends StatelessWidget {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Batas Registrasi: ${activity['batasRegistrasi'] ?? 'N/A'}'),
+                        Text(
+                            'Batas Registrasi: ${activity['batasRegistrasi'] ?? 'N/A'}'),
                         Text('Lokasi: ${activity['lokasi'] ?? 'N/A'}'),
-                        Text('Waktu Pelaksanaan: ${activity['tanggalKegiatan'] ?? 'N/A'}'),
+                        Text(
+                            'Waktu Pelaksanaan: ${activity['tanggalKegiatan'] ?? 'N/A'}'),
                       ],
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        IconButton(
+                          icon: Icon(Icons.supervised_user_circle),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TableRelawan(),
+                              ),
+                            );
+                          },
+                        ),
                         IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
@@ -96,41 +105,38 @@ class MyActivitiesListView extends StatelessWidget {
   }
 
   void _updateActivity(BuildContext context, DocumentSnapshot activity) {
-  // Buka layar formulir untuk memperbarui aktivitas
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => EditActivityForm(activity: activity),
-    ),
-  );
-}
-
-  void _deleteActivity(BuildContext context, DocumentSnapshot activity) async {
-  try {
-    // Dapatkan URL gambar dari dokumen aktivitas
-    String? imageUrl = activity['imageUrl'];
-
-    // Hapus dokumen aktivitas dari Firestore
-    await FirebaseFirestore.instance
-        .collection('activities')
-        .doc(activity.id)
-        .delete();
-
-    // Jika terdapat URL gambar, hapus juga gambar dari Firebase Storage
-    if (imageUrl != null) {
-      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Activity deleted successfully')),
-    );
-  } catch (error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Failed to delete activity: $error')),
+    // Buka layar formulir untuk memperbarui aktivitas
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditActivityForm(activity: activity),
+      ),
     );
   }
+
+  void _deleteActivity(BuildContext context, DocumentSnapshot activity) async {
+    try {
+      // Dapatkan URL gambar dari dokumen aktivitas
+      String? imageUrl = activity['imageUrl'];
+
+      // Hapus dokumen aktivitas dari Firestore
+      await FirebaseFirestore.instance
+          .collection('activities')
+          .doc(activity.id)
+          .delete();
+
+      // Jika terdapat URL gambar, hapus juga gambar dari Firebase Storage
+      if (imageUrl != null) {
+        await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Activity deleted successfully')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete activity: $error')),
+      );
+    }
+  }
 }
-
-}
-
-

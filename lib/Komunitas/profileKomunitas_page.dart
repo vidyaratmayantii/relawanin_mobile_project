@@ -43,6 +43,15 @@ class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
     }
   }
 
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   void _onProfilePicChanged() {
     setState(() {
       loadProfileImage();
@@ -176,12 +185,7 @@ class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
                   },
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
+                  onPressed: _logout,
                   child: const Text(
                     'Keluar',
                     style: TextStyle(color: Colors.red), // warna teks
@@ -210,8 +214,7 @@ class _ProfilePageKomunitasState extends State<ProfilePageKomunitas> {
             } else if (index == 1) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => pageSearchKomunitas()),
+                MaterialPageRoute(builder: (context) => pageSearchKomunitas()),
               );
             } else if (index == 2) {
               Navigator.push(

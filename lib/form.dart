@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:relawanin_mobile_project/Komunitas/tableRelawan.dart';
+import 'package:relawanin_mobile_project/dashboard_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,7 +65,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: Image.asset('assets/logo.png'),
-          backgroundColor:const Color(0xFF00897B),
+          backgroundColor: const Color(0xFF00897B),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -172,7 +173,7 @@ class _MyAppState extends State<MyApp> {
                     },
                   ),
                   SizedBox(height: 10), //jaraknya dengan yang atas
-                  
+
                   SizedBox(height: 40),
                   Builder(
                     builder: (BuildContext context) {
@@ -199,7 +200,7 @@ class _MyAppState extends State<MyApp> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => TableRelawan(),
+                                  builder: (context) => SuksesScreen(),
                                 ),
                               );
                             });
@@ -228,6 +229,59 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SuksesScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Image.asset('assets/logo.png'),
+        backgroundColor: const Color(0xFF00897B),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.check_circle_outline,
+              size: 100,
+              color: Colors.green,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Formulir Terkirim!',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Terima kasih telah mendaftar kegiatan! \nProses pendaftaranmu akan diproses oleh pihak komunitas, dan tunggu email penerimaan dari komunitas',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DashboardPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromRGBO(0, 137, 123, 1),
+                minimumSize: Size(30, 50),
+              ),
+              child: Text(
+                'Kembali',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
       ),
     );

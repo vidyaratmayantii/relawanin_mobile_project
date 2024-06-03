@@ -21,7 +21,7 @@ class _TableRelawanState extends State<TableRelawan> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Image.asset('assets/logoRelawanin.png'),
+          title: Image.asset('assets/logo.png'),
           backgroundColor: Color.fromRGBO(0, 137, 123, 1),
           centerTitle: true,
           leading: IconButton(
