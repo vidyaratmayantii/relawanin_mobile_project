@@ -23,6 +23,12 @@ class MyApp extends StatelessWidget {
           title: Image.asset('assets/logo.png'),
           backgroundColor: const Color(0xFF00897B),
           centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
         body: FormPage(),
       ),
@@ -114,7 +120,8 @@ class _FormPageState extends State<FormPage> {
               TextFormField(
                 controller: noTlpController,
                 decoration: InputDecoration(
-                    hintText: 'Nomor Telepon', hintStyle: TextStyle(fontSize: 16)),
+                    hintText: 'Nomor Telepon',
+                    hintStyle: TextStyle(fontSize: 16)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Nomor Telepon wajib diisi';
