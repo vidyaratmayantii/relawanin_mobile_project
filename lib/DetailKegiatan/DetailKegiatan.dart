@@ -89,7 +89,7 @@ class _DetailKegiatanState extends State<DetailKegiatan> {
           child: AppBar(
             backgroundColor: Color(0xFF00897B),
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 Navigator.of(context).pop();
               },
