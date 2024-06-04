@@ -55,6 +55,7 @@ class _TableRelawanState extends State<TableRelawan> {
                       DataColumn(label: Text('Pekerjaan')),
                       DataColumn(label: Text('Alasan')),
                       DataColumn(label: Text('Pengalaman')),
+                      DataColumn(label: Text('CV')),
                     ],
                     header:
                         const Center(child: Text('Table Registrasi Relawan')),
@@ -90,6 +91,7 @@ class FirestoreDataTableSource extends DataTableSource {
       DataCell(Text(item['pekerjaan'] ?? '')),
       DataCell(Text(item['alasan'] ?? '')),
       DataCell(Text(item['pengalaman'] ?? '')),
+      DataCell(Text(item['pdfUrl'] ?? '')),
     ]);
   }
 
