@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:relawanin_mobile_project/Komunitas/tableRelawan.dart';
 import 'package:relawanin_mobile_project/dashboard_page.dart';
 
 void main() async {
@@ -18,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           title: Image.asset('assets/logo.png'),
@@ -46,45 +46,46 @@ class _FormPageState extends State<FormPage> {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final namaController = TextEditingController();
+  final emailController = TextEditingController();
+  final noTlpController = TextEditingController();
+  final umurController = TextEditingController();
+  final pekerjaanController = TextEditingController();
+  final alasanController = TextEditingController();
+  final pengalamanController = TextEditingController();
+
+  String? _pdfUrl;
+  String? _fileName;
+
   Future<String> uploadPdf(String fileName, File file) async {
-    final ref = FirebaseStorage.instance.ref().child("pdf/$fileName.pdf");
+    final ref = FirebaseStorage.instance.ref().child("cv/$fileName.pdf");
     final uploadTask = ref.putFile(file);
     await uploadTask.whenComplete(() {});
     final downloadLink = await ref.getDownloadURL();
     return downloadLink;
   }
 
-  void selectPdf() async {
+  Future<void> selectPdf() async {
     final pick = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
 
     if (pick != null) {
-      String fileName = pick.files[0].name;
-      File file = File(pick.files[0].path!);
+      String fileName = pick.files.single.name;
+      File file = File(pick.files.single.path!);
 
       final downloadLink = await uploadPdf(fileName, file);
 
-      await _firebaseFirestore.collection('pdf').add({
-        "nama": fileName,
-        "url": downloadLink,
+      setState(() {
+        _pdfUrl = downloadLink;
+        _fileName = fileName;
       });
-
-      print("File uploaded successfully: $downloadLink");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final namaController = TextEditingController();
-    final emailController = TextEditingController();
-    final noTlpController = TextEditingController();
-    final umurController = TextEditingController();
-    final pekerjaanController = TextEditingController();
-    final alasanController = TextEditingController();
-    final pengalamanController = TextEditingController();
-
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Padding(
@@ -187,6 +188,42 @@ class _FormPageState extends State<FormPage> {
                   return null;
                 },
               ),
+              SizedBox(height: 10), // Space between form fields and button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to start
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          selectPdf();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromRGBO(0, 137, 123, 1),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add_circle,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8), // Space between icon and text
+                            Text(
+                              'Upload CV',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (_fileName != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        'Selected file: $_fileName',
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                    ),
               SizedBox(height: 40),
               Builder(
                 builder: (BuildContext context) {
@@ -207,6 +244,7 @@ class _FormPageState extends State<FormPage> {
                             'pekerjaan': pekerjaanController.text,
                             'alasan': alasanController.text,
                             'pengalaman': pengalamanController.text,
+                            'pdfUrl': _pdfUrl,
                           }).then((value) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
